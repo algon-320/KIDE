@@ -44,13 +44,13 @@ func (p *Problem) Print() {
 	fmt.Println("url:", p.URL)
 	fmt.Println("oj:", p.Oj.Name())
 	for i, tc := range p.Cases {
-		fmt.Printf("==== sample case %d =========\n", i)
-		fmt.Println("-------- Input ---------")
+		util.PrintTitlef(30, 4, "=", "sample case %d", i)
+		util.PrintTitle(30, 8, "-", "Input")
 		fmt.Print(tc.Input)
-		fmt.Println("-------- Output --------")
+		util.PrintTitle(30, 8, "-", "Output")
 		fmt.Print(tc.Output)
 	}
-	fmt.Println("============================")
+	fmt.Println(strings.Repeat("=", 30))
 }
 
 // Save ... ファイルに保存する

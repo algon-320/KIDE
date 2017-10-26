@@ -1,6 +1,9 @@
 package util
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 const (
 	// Escape sequences to colorize text
@@ -75,4 +78,40 @@ func PrintTable(title []string, data [][]string, border bool) {
 		}
 		fmt.Print("\n")
 	}
+}
+
+// SprintTitle ... タイトルテキストを装飾付きで表示して改行した文字列を返す
+//     例:) SprintTitle(20, 5, "-+", "Hello,World") --> "-+-+- Hello,World -+-+-+-+"
+// width: 全体の幅
+// prefixWidth: textの前の装飾の幅
+// ornament: 装飾として用いる文字列
+// text: 表示する文字列
+func SprintTitle(width int, prefixWidth int, ornament string, text string) string {
+	if width < len(text) {
+		return ""
+	}
+	front := strings.Repeat(ornament, prefixWidth/len(ornament)+1)[:prefixWidth]
+	back := strings.Repeat(ornament, (width-prefixWidth-len(text)-2)/len(ornament)+1)[:width-prefixWidth-len(text)-2]
+	return fmt.Sprintf("%s %s %s\n", front, text, back)
+}
+
+// SprintTitlef ... SprintTitleのフォーマット文字列版
+func SprintTitlef(width int, prefixWidth int, ornament string, ftext string, args ...interface{}) string {
+	text := fmt.Sprintf(ftext, args...)
+	return SprintTitle(width, prefixWidth, ornament, text)
+}
+
+// PrintTitle ... タイトルテキストを装飾付きで表示して改行する
+//     例:) PrintTitle(20, 5, "-+", "Hello,World") --> "-+-+- Hello,World -+-+-+-+"
+// width: 全体の幅
+// prefixWidth: textの前の装飾の幅
+// ornament: 装飾として用いる文字列
+// text: 表示する文字列
+func PrintTitle(width int, prefixWidth int, ornament string, text string) {
+	fmt.Print(SprintTitle(width, prefixWidth, ornament, text))
+}
+
+// PrintTitlef ... PrintTitleのフォーマット文字列版
+func PrintTitlef(width int, prefixWidth int, ornament string, ftext string, args ...interface{}) {
+	fmt.Print(SprintTitlef(width, prefixWidth, ornament, ftext, args...))
 }

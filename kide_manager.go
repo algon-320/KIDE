@@ -63,13 +63,13 @@ func tester(lang language.Language, problemID string, caseID int) error {
 			}
 
 			if out != c.Output {
-				fmt.Println("==== input =================")
+				util.PrintTitle(30, 4, "=", "input")
 				fmt.Print(c.Input)
-				fmt.Println("==== your answer ===========")
+				util.PrintTitle(30, 4, "=", "your answer")
 				fmt.Print(out)
-				fmt.Println("==== correct answer ========")
+				util.PrintTitle(30, 4, "=", "correct answer")
 				fmt.Print(c.Output)
-				fmt.Println("============================")
+				fmt.Println(strings.Repeat("=", 30))
 
 				fmt.Println(util.ESCS_COL_RED_B + "Wrong answer" + util.ESCS_COL_OFF)
 				samplePassed = false
@@ -82,11 +82,11 @@ func tester(lang language.Language, problemID string, caseID int) error {
 	} else if 0 < caseID && caseID <= len(p.Cases) {
 		c := p.Cases[caseID-1]
 
-		fmt.Println("==== input =================")
+		util.PrintTitle(30, 4, "=", "input")
 		fmt.Print(c.Input)
-		fmt.Println("==== output ================")
+		util.PrintTitle(30, 4, "=", "output")
 		out, err := lang.Run(filename, c.Input, true) // 画面出力しながら実行
-		fmt.Println("============================")
+		fmt.Println(strings.Repeat("=", 30))
 
 		if err != nil {
 			return err
@@ -96,11 +96,11 @@ func tester(lang language.Language, problemID string, caseID int) error {
 			fmt.Println(util.ESCS_COL_GREEN_B + "Passed" + util.ESCS_COL_OFF)
 		} else {
 			fmt.Println(util.ESCS_COL_RED_B + "Wrong answer" + util.ESCS_COL_OFF)
-			fmt.Println("==== your answer ===========")
+			util.PrintTitle(30, 4, "=", "your answer")
 			fmt.Print(out)
-			fmt.Println("==== correct answer ========")
+			util.PrintTitle(30, 4, "=", "correct answer")
 			fmt.Print(c.Output)
-			fmt.Println("============================")
+			fmt.Println(strings.Repeat("=", 30))
 		}
 	} else {
 		return fmt.Errorf(util.PrefixError+"case id should be 1 to %d", len(p.Cases))
