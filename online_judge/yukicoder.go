@@ -2,6 +2,7 @@ package online_judge
 
 import (
 	"fmt"
+	"html"
 	"regexp"
 	"time"
 
@@ -246,8 +247,10 @@ func (yc *yukicoder) NewProblem(url string) error {
 		var testCase TestCase
 		doc.Find("div.sample > div").Each(func(_ int, s *goquery.Selection) {
 			testCase.Input = s.Find("pre:nth-of-type(1)").Text()
+			testCase.Input = html.UnescapeString(testCase.Input)
 			testCase.Input = util.AddBR(testCase.Input)
 			testCase.Output = s.Find("pre:nth-of-type(2)").Text()
+			testCase.Output = html.UnescapeString(testCase.Output)
 			testCase.Output = util.AddBR(testCase.Output)
 			p.Cases = append(p.Cases, testCase)
 		})

@@ -2,6 +2,7 @@ package online_judge
 
 import (
 	"fmt"
+	"html"
 	"regexp"
 	"strings"
 	"time"
@@ -271,17 +272,21 @@ func (ac *atcoder) NewProblem(url string) error {
 			case strings.HasPrefix(h3Text, "入力例"):
 				japanese = true
 				testCase.Input = s.Find("pre").Text()
+				testCase.Input = html.UnescapeString(testCase.Input)
 				testCase.Input = util.AddBR(testCase.Input)
 			case strings.HasPrefix(h3Text, "出力例"):
 				testCase.Output = s.Find("pre").Text()
+				testCase.Output = html.UnescapeString(testCase.Output)
 				testCase.Output = util.AddBR(testCase.Output)
 				p.Cases = append(p.Cases, testCase)
 
 			case strings.HasPrefix(h3Text, "Sample Input") && !japanese:
 				testCase.Input = s.Find("pre").Text()
+				testCase.Input = html.UnescapeString(testCase.Input)
 				testCase.Input = util.AddBR(testCase.Input)
 			case strings.HasPrefix(h3Text, "Sample Output") && !japanese:
 				testCase.Output = s.Find("pre").Text()
+				testCase.Output = html.UnescapeString(testCase.Output)
 				testCase.Output = util.AddBR(testCase.Output)
 				p.Cases = append(p.Cases, testCase)
 			}

@@ -2,6 +2,7 @@ package online_judge
 
 import (
 	"fmt"
+	"html"
 	"regexp"
 	"strings"
 	"time"
@@ -255,12 +256,14 @@ func (cf *codeforces) NewProblem(url string) error {
 				pre, _ := goquery.OuterHtml(s.Find("pre"))
 				pre = strings.Replace(pre, "<br/>", "\n", -1)
 				testCase.Input = pre[5 : len(pre)-6] // <pre>と</pre>を取り除く
+				testCase.Input = html.UnescapeString(testCase.Input)
 				testCase.Input = util.AddBR(testCase.Input)
 
 			} else if s.HasClass("output") {
 				pre, _ := goquery.OuterHtml(s.Find("pre"))
 				pre = strings.Replace(pre, "<br/>", "\n", -1)
 				testCase.Output = pre[5 : len(pre)-6] // <pre>と</pre>を取り除く
+				testCase.Output = html.UnescapeString(testCase.Output)
 				testCase.Output = util.AddBR(testCase.Output)
 				p.Cases = append(p.Cases, testCase)
 			}

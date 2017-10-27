@@ -2,6 +2,7 @@ package online_judge
 
 import (
 	"fmt"
+	"html"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -265,6 +266,7 @@ func (a *aoj) NewProblem(url string) error {
 				strings.HasPrefix(utfText, "サンプル入力") ||
 				strings.HasPrefix(utfText, "Sample Input") {
 				testCase.Input = s.Next().Text()
+				testCase.Input = html.UnescapeString(testCase.Input)
 				testCase.Input = util.AddBR(testCase.Input)
 
 			} else if strings.HasPrefix(utfText, "出力例") ||
@@ -272,6 +274,7 @@ func (a *aoj) NewProblem(url string) error {
 				strings.HasPrefix(utfText, "Sample Output") ||
 				strings.HasPrefix(utfText, "Output for") {
 				testCase.Output = s.Next().Text()
+				testCase.Output = html.UnescapeString(testCase.Output)
 				testCase.Output = util.AddBR(testCase.Output)
 				p.Cases = append(p.Cases, testCase)
 			}
