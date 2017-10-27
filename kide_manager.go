@@ -229,7 +229,7 @@ func processSource(sourceCode string) string {
 		const (
 			SKIPBEGIN      = "//SKIPBEGIN"
 			SKIPEND        = "//SKIPEND"
-			PROBLEM_STRING = "KYOPRO_COPY_PROBLEM_"
+			PROBLEM_STRING = "KIDE_PROBLEM_"
 		)
 
 		ret := ""
