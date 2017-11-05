@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"regexp"
 
 	"github.com/algon-320/KIDE/language"
 	"github.com/algon-320/KIDE/online_judge"
@@ -116,6 +117,26 @@ func cmdProcesser(c *cli.Context) error {
 	return nil
 }
 
+func cmdAtCoderConv(c *cli.Context) error {
+	if c.NArg() < 1 {
+		return cli.NewExitError(util.PrefixError+"few args", 1)
+	}
+	url := c.Args().First()
+	re := regexp.MustCompile("http://(.+)\\.contest.atcoder.jp/(.*)")
+	group := re.FindSubmatch([]byte(url))
+	if group == nil {
+		return cli.NewExitError(util.PrefixError+"error", 1)
+	}
+	contest := string(group[1])
+	var suffix string
+	if len(group) > 2 {
+		suffix = string(group[2])
+	}
+	newURL := "https://beta.atcoder.jp/contests/" + contest + "/" + suffix
+	fmt.Println(newURL)
+	return nil
+}
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "KIDE"
@@ -190,6 +211,11 @@ func main() {
 					Usage: "designate language name",
 				},
 			},
+		},
+		{
+			Name:   "atcoderconv",
+			Usage:  "convert old atcoder url to beta url",
+			Action: cmdAtCoderConv,
 		},
 	}
 
