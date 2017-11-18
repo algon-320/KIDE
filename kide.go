@@ -122,7 +122,7 @@ func cmdAtCoderConv(c *cli.Context) error {
 		return cli.NewExitError(util.PrefixError+"few args", 1)
 	}
 	url := c.Args().First()
-	re := regexp.MustCompile("http://(.+)\\.contest.atcoder.jp/(.*)")
+	re := regexp.MustCompile("https://(.+)\\.contest.atcoder.jp/(.*)")
 	group := re.FindSubmatch([]byte(url))
 	if group == nil {
 		return cli.NewExitError(util.PrefixError+"error", 1)
