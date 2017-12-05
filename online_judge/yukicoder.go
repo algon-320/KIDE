@@ -176,6 +176,7 @@ func (yc *yukicoder) Submit(p *Problem, sourceCode string, lang language.Languag
 
 	// get Judge Status
 	var status string
+	watingCnt := 0
 waiting:
 	for {
 		br.Open(mysubmissionURL)
@@ -208,9 +209,14 @@ waiting:
 			break waiting
 		}
 
-		fmt.Println("waiting for judge ...")
+		if watingCnt == 0 {
+			fmt.Print(util.PrefixInfo + "waiting for judge .")
+		} else {
+			fmt.Print(".")
+		}
 		time.Sleep(CheckInterval)
 	}
+	fmt.Print("\n")
 
 	return &res, nil
 }

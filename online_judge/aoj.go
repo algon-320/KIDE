@@ -165,6 +165,7 @@ func (a *aoj) Submit(p *Problem, sourceCode string, lang language.Language) (*Ju
 	judgeRes.URL = resultURL
 
 	waiting := true
+	watingCnt := 0
 	for waiting {
 		doc, err = goquery.NewDocument(resultURL)
 		if err != nil {
@@ -213,9 +214,14 @@ func (a *aoj) Submit(p *Problem, sourceCode string, lang language.Language) (*Ju
 			break
 		}
 
-		fmt.Println(util.PrefixInfo + "waiting for judge : " + submissionID)
+		if watingCnt == 0 {
+			fmt.Print(util.PrefixInfo + "waiting for judge .")
+		} else {
+			fmt.Print(".")
+		}
 		time.Sleep(CheckInterval)
 	}
+	fmt.Print("\n")
 
 	return &judgeRes, nil
 }
