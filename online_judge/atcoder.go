@@ -198,29 +198,29 @@ waiting:
 		br.Open(mysubmissionsURL)
 		status = br.Dom().Find("tbody > tr:nth-of-type(1) > td:nth-of-type(7) > span").Text()
 
-		switch status {
-		case "AC":
+		switch {
+		case strings.Contains(status, "AC"):
 			res.Status = JudgeStatusAC
 			break waiting
-		case "WA":
+		case strings.Contains(status, "WA"):
 			res.Status = JudgeStatusWA
 			break waiting
-		case "CE":
+		case strings.Contains(status, "CE"):
 			res.Status = JudgeStatusCE
 			break waiting
-		case "RE":
+		case strings.Contains(status, "RE"):
 			res.Status = JudgeStatusRE
 			break waiting
-		case "TLE":
+		case strings.Contains(status, "TLE"):
 			res.Status = JudgeStatusTLE
 			break waiting
-		case "MLE":
+		case strings.Contains(status, "MLE"):
 			res.Status = JudgeStatusMLE
 			break waiting
-		case "OLE":
+		case strings.Contains(status, "OLE"):
 			res.Status = JudgeStatusOLE
 			break waiting
-		case "IE":
+		case strings.Contains(status, "IE"):
 			res.Status = JudgeStatusIE
 			break waiting
 		}
