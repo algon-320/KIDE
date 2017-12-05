@@ -107,17 +107,17 @@ type JudgeResult struct {
 
 // Print ... ジャッジの詳細を出力する TODO: 文字列で返すようにするべき(またはString()を実装する)
 func (res *JudgeResult) Print() {
-	util.PrintTitle(30, 4, "=", "JudgeResult")
+	util.PrintTitle(80, 4, "#", "JudgeResult")
 	// util.PrintTitle(30, 4, "=", "Problem")
 	// res.Problem.Print()
-	util.PrintTitle(30, 4, "=", "Language")
+	util.PrintTitle(80, 4, "=", "Language")
 	fmt.Println(res.Language)
-	util.PrintTitle(30, 4, "=", "SourceCode")
+	util.PrintTitle(80, 4, "=", "SourceCode")
 	fmt.Println(res.Code)
-	util.PrintTitle(30, 4, "=", "Date")
+	util.PrintTitle(80, 4, "=", "Date")
 	fmt.Println(res.Date)
-	util.PrintTitle(30, 4, "=", "URL")
+	util.PrintTitle(80, 4, "=", "URL")
 	fmt.Println(res.URL)
-	util.PrintTitle(30, 4, "=", "Status")
+	util.PrintTitle(80, 4, "=", "Status")
 	fmt.Println(res.Status)
 }
