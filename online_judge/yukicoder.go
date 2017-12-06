@@ -162,7 +162,6 @@ func (yc *yukicoder) Submit(p *Problem, sourceCode string, lang language.Languag
 
 	fmt.Println(util.PrefixInfo + "Your solution was successfully submitted.")
 
-	fmt.Println(br.Url().String())
 	mysubmissionsURL := yc.url + fmt.Sprintf("problems/no/%s/submissions?my_submission=enabled", p.ID)
 	br.Open(mysubmissionsURL)
 	submissionID := br.Dom().Find("#content > div.left > table > tbody > tr:nth-child(1) > td:nth-child(1) > a").Text()
