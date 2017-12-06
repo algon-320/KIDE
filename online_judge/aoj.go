@@ -219,6 +219,7 @@ func (a *aoj) Submit(p *Problem, sourceCode string, lang language.Language) (*Ju
 		} else {
 			fmt.Print(".")
 		}
+		watingCnt++
 		time.Sleep(CheckInterval)
 	}
 	fmt.Print("\n")
