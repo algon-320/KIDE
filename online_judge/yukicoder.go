@@ -126,6 +126,10 @@ func (yc *yukicoder) Name() string {
 }
 
 func (yc *yukicoder) Submit(p *Problem, sourceCode string, lang language.Language) (*JudgeResult, error) {
+	if sourceCode == "" {
+		return nil, &ErrFailedToSubmit{message: "should not be empty."}
+	}
+
 	br, err := yc.login()
 	if err != nil {
 		return nil, err
@@ -152,19 +156,17 @@ func (yc *yukicoder) Submit(p *Problem, sourceCode string, lang language.Languag
 		if err := fm.Input("source", sourceCode); err != nil {
 			continue
 		}
-		if err := fm.Submit(); err != nil {
-			return nil, err
-		}
+		fm.Submit()
 		break
-	}
-
-	if br.Url().String() == submitURL {
-		return nil, &ErrFailedToSubmit{message: "might be empty."}
 	}
 
 	fmt.Println(util.PrefixInfo + "Your solution was successfully submitted.")
 
-	mysubmissionURL := br.Url().String()
+	fmt.Println(br.Url().String())
+	mysubmissionsURL := yc.url + fmt.Sprintf("problems/no/%s/submissions?my_submission=enabled", p.ID)
+	br.Open(mysubmissionsURL)
+	submissionID := br.Dom().Find("#content > div.left > table > tbody > tr:nth-child(1) > td:nth-child(1) > a").Text()
+	mysubmissionURL := yc.url + fmt.Sprintf("submissions/%s", submissionID)
 
 	var res JudgeResult
 	res.Date = time.Now()
@@ -214,6 +216,7 @@ waiting:
 		} else {
 			fmt.Print(".")
 		}
+		watingCnt++
 		time.Sleep(CheckInterval)
 	}
 	fmt.Print("\n")
