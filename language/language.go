@@ -30,6 +30,8 @@ func GetLanguage(name string) Language {
 		return CPP
 	case "python":
 		return PYTHON
+	case "java":
+		return JAVA
 	default:
 		fmt.Println(util.PrefixCaution + "unsupported language.")
 		return CPP // TODO: settingから読むべき

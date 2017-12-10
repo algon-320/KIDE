@@ -35,6 +35,8 @@ func (yc *yukicoder) getLangID(lang language.Language) (string, error) {
 		return "cpp14", nil // C++14 (gcc 7.1.0)
 	case language.PYTHON:
 		return "python", nil // Python2 (2.7.13)
+	case language.JAVA:
+		return "java8", nil // Java8 (openjdk 1.8.0.141)
 	default:
 		return "", &ErrUnsuportedLanguage{name: lang.Name()}
 	}

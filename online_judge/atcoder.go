@@ -36,6 +36,8 @@ func (ac *atcoder) getLangID(lang language.Language) (string, error) {
 		return "3003", nil // C++14 (GCC 5.4.1)
 	case language.PYTHON:
 		return "3022", nil // Python2 (2.7.6)
+	case language.JAVA:
+		return "3016", nil // Java8 (OpenJDK 1.8.0)
 	default:
 		return "", &ErrUnsuportedLanguage{name: lang.Name()}
 	}

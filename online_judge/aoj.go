@@ -37,6 +37,8 @@ func (a *aoj) getLangID(lang language.Language) (string, error) {
 		return "C++14", nil // C++14
 	case language.PYTHON:
 		return "Python", nil // Python2
+	case language.JAVA:
+		return "JAVA", nil // JAVA
 	default:
 		return "", &ErrUnsuportedLanguage{name: lang.Name()}
 	}
