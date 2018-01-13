@@ -2,5 +2,6 @@
 /session*
 /settings*
 /previous.txt
+/run.sh
 
 /samplecases
