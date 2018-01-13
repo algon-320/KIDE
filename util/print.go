@@ -15,15 +15,11 @@ const (
 	ESCS_BOLD         = "\033[1m"
 	ESCS_COL_OFF      = "\033[0m"
 
-	// PrefixInfo    = "\033[34;1m[INFO]\033[0m "
-	// PrefixDebug   = "\033[32;1m[DEBUG]\033[0m "
-	// PrefixError   = "\033[31;1m[ERROR]\033[0m "
-	// PrefixCaution = "\033[33;1m[CAUTION]\033[0m "
-	PrefixInfo     = ESCS_COL_CYAN_B + "● " + ESCS_COL_OFF   // Prefix of Infomation message.
-	PrefixDebug    = ESCS_COL_GREEN_B + "● " + ESCS_COL_OFF  // Prefix of Debug message.
-	PrefixError    = ESCS_COL_RED_B + "● " + ESCS_COL_OFF    // Prefix of Error message.
-	PrefixCaution  = ESCS_COL_YELLOW_B + "● " + ESCS_COL_OFF // Prefix of Caution message.
-	PrefixQuestion = ESCS_COL_PURPLE_B + "● " + ESCS_COL_OFF // Prefix of Question message.
+	PrefixInfo     = ESCS_COL_CYAN_B + "● " + ESCS_COL_OFF   // 水色
+	PrefixDebug    = ESCS_COL_GREEN_B + "● " + ESCS_COL_OFF  // 緑
+	PrefixError    = ESCS_COL_RED_B + "● " + ESCS_COL_OFF    // 赤
+	PrefixCaution  = ESCS_COL_YELLOW_B + "● " + ESCS_COL_OFF // 黄色
+	PrefixQuestion = ESCS_COL_PURPLE_B + "● " + ESCS_COL_OFF // 紫
 )
 
 // DebugPrint ... デバックメッセージを出力する
@@ -81,7 +77,7 @@ func PrintTable(title []string, data [][]string, border bool) {
 }
 
 // SprintTitle ... タイトルテキストを装飾付きで表示して改行した文字列を返す
-//     例:) SprintTitle(20, 5, "-+", "Hello,World") --> "-+-+- Hello,World -+-+-+-+"
+//     例:) SprintTitle(20, 5, "-+", "Hello,World") --> "-+-+- Hello,World -+-+-+-+\n"
 // width: 全体の幅
 // prefixWidth: textの前の装飾の幅
 // ornament: 装飾として用いる文字列
