@@ -116,6 +116,7 @@ func submit(souceFilename string, lang language.Language, p *online_judge.Proble
 		return nil
 	}
 
+	// この時点で提出するソースコードが確定
 	sourceCodeBytes, err := ioutil.ReadFile(souceFilename)
 	if err != nil {
 		return err
