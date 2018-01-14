@@ -28,6 +28,7 @@ var languageList = []Language{
 func GetLanguage(name string) Language {
 	for _, lang := range languageList {
 		if name == lang.Name() {
+			fmt.Println(name, "selected")
 			return lang
 		}
 	}
