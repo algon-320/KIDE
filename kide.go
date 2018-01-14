@@ -151,7 +151,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
-					Value: "c++",
+					Value: "C++",
 					Usage: "designate language name",
 				},
 			},
@@ -164,7 +164,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
-					Value: "c++",
+					Value: "C++",
 					Usage: "designate language name",
 				},
 				cli.IntFlag{
@@ -188,7 +188,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
-					Value: "c++",
+					Value: "C++",
 					Usage: "designate language name",
 				},
 			},
@@ -207,7 +207,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
-					Value: "c++",
+					Value: "C++",
 					Usage: "designate language name",
 				},
 			},
