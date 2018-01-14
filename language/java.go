@@ -1,7 +1,7 @@
 package language
 
 // JAVA ... Java
-var JAVA = &LanguageBase{
+var JAVA = &languageBase{
 	name:           "Java",
 	fileExtension:  ".java",
 	compileCommand: "javac {SOURCEFILE_PATH}",
@@ -11,5 +11,5 @@ var JAVA = &LanguageBase{
 }
 
 type java struct {
-	LanguageBase
+	languageBase
 }

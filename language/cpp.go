@@ -1,7 +1,7 @@
 package language
 
 // CPP ... C++14
-var CPP = &LanguageBase{
+var CPP = &languageBase{
 	name:           "C++",
 	fileExtension:  ".cpp",
 	compileCommand: "g++ -std=gnu++1y -O2 {SOURCEFILE_PATH} -o a.out",
@@ -11,5 +11,5 @@ var CPP = &LanguageBase{
 }
 
 type cpp struct {
-	LanguageBase
+	languageBase
 }

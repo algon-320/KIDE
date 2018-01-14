@@ -11,8 +11,8 @@ import (
 	"github.com/algon-320/KIDE/util"
 )
 
-// LanguageBase ... 言語定義用(LanguageインターフェースのRunメソッド以外を実装済み)
-type LanguageBase struct {
+// languageBase ... 言語定義用(LanguageインターフェースのRunメソッド以外を実装済み)
+type languageBase struct {
 	name           string
 	fileExtension  string
 	compileCommand string // {SOURCEFILE_PATH} の部分がすべてソースコードのパスに置換される
@@ -22,32 +22,32 @@ type LanguageBase struct {
 }
 
 // Name ... 言語の名前を返す
-func (l *LanguageBase) Name() string {
+func (l *languageBase) Name() string {
 	return l.name
 }
-func (l *LanguageBase) String() string {
+func (l *languageBase) String() string {
 	return l.Name()
 }
 
 // FileExtension ... ソースファイルの拡張子
-func (l *LanguageBase) FileExtension() string {
+func (l *languageBase) FileExtension() string {
 	return l.fileExtension
 }
 
 // CommentOut ... line で与えられた文字列をコメントアウトして返す
-func (l *LanguageBase) CommentOut(line string) string {
+func (l *languageBase) CommentOut(line string) string {
 	return l.commentBegin + line + l.commentEnd
 }
 
 // UnComment ... commentedLine で与えられたコメントアウトされた文字列のコメントを外して返す
-func (l *LanguageBase) UnComment(commentedLine string) string {
+func (l *languageBase) UnComment(commentedLine string) string {
 	lenBegin := len(l.commentBegin)
 	lenEnd := len(l.commentEnd)
 	return commentedLine[lenBegin : len(commentedLine)-lenEnd]
 }
 
 // compile ... sourcePath で与えられたパスのソースコードをコンパイルする(変更がない場合は何もしない)
-func (l *LanguageBase) compile(sourcePath string) error {
+func (l *languageBase) compile(sourcePath string) error {
 	skip, err := checkSkipCompile(sourcePath) // 変更があるか確認
 	if err != nil {
 		return err
@@ -74,7 +74,7 @@ func (l *LanguageBase) compile(sourcePath string) error {
 // input : 標準入力として与える文字列
 // print : 標準出力、標準エラー出力を画面に出力するかどうか
 // return : 実行結果の標準出力, この関数のエラー
-func (l *LanguageBase) Run(sourcePath string, input string, print bool) (string, error) {
+func (l *languageBase) Run(sourcePath string, input string, print bool) (string, error) {
 	if l.compileCommand != "" {
 		if err := l.compile(sourcePath); err != nil {
 			return "", err

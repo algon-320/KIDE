@@ -1,7 +1,7 @@
 package language
 
 // PYTHON ... Python2
-var PYTHON = &LanguageBase{
+var PYTHON = &languageBase{
 	name:           "Python2",
 	fileExtension:  ".py",
 	compileCommand: "",
@@ -11,5 +11,5 @@ var PYTHON = &LanguageBase{
 }
 
 type python struct {
-	LanguageBase
+	languageBase
 }
