@@ -139,13 +139,12 @@ func submit(souceFilename string, lang language.Language, p *online_judge.Proble
 
 	// 保存
 	var saveSourceFileAfterAccepted bool
-	tmp, ok := setting.Get("General.SaveSourceFileAfterAccepted", "")
-	if !ok {
+	if tmp, ok := setting.Get("General.SaveSourceFileAfterAccepted", ""); ok {
+		saveSourceFileAfterAccepted = tmp.(bool)
+	} else {
 		fmt.Println("Do you want to copy the source file after the solution is accepted (or pretests passed) ?")
 		saveSourceFileAfterAccepted = util.AskYesNo()
 		setting.Set("General.SaveSourceFileAfterAccepted", saveSourceFileAfterAccepted)
-	} else {
-		saveSourceFileAfterAccepted = tmp.(bool)
 	}
 
 	if (res.Status == online_judge.JudgeStatusAC || res.Status == online_judge.JudgeStatusPP) &&
@@ -173,8 +172,8 @@ func saveSourceFile(sourceFilename string, sourceCode []byte, p *online_judge.Pr
 	exeDir = filepath.Dir(exeDir)
 
 	var saveSourceFileDir string
-	tmp, ok := setting.Get("General.SaveSourceFileDirectory", "")
-	if ok {
+	var ok bool
+	if tmp, ok := setting.Get("General.SaveSourceFileDirectory", ""); ok {
 		saveSourceFileDir = tmp.(string)
 		expanded := strings.Replace(saveSourceFileDir, "{EXE_DIR}", exeDir, 1)
 		if !util.FileExists(expanded) {

@@ -45,21 +45,19 @@ func (ac *atcoder) getLangID(lang language.Language) (string, error) {
 
 func (ac *atcoder) loadAccount() (string, string) {
 	var handle string
-	tmp, ok := setting.Get("OnlineJudge.AtCoder.Handle", "ATCODER_HANDLE")
-	if !ok {
+	if tmp, ok := setting.Get("OnlineJudge.AtCoder.Handle", "ATCODER_HANDLE"); ok {
+		handle = tmp.(string)
+	} else {
 		handle = util.AskString("What is your AtCoder account id ?")
 		setting.Set("OnlineJudge.AtCoder.Handle", handle)
-	} else {
-		handle = tmp.(string)
 	}
 
 	var password string
-	tmp, ok = setting.Get("OnlineJudge.AtCoder.Password", "ATCODER_PASSWORD")
-	if !ok {
+	if tmp, ok := setting.Get("OnlineJudge.AtCoder.Password", "ATCODER_PASSWORD"); ok {
+		password = tmp.(string)
+	} else {
 		password = util.AskString("What is your AtCoder account password ?")
 		setting.Set("OnlineJudge.AtCoder.Password", password)
-	} else {
-		password = tmp.(string)
 	}
 
 	return handle, password

@@ -45,21 +45,19 @@ func (cf *codeforces) getLangID(lang language.Language) (string, error) {
 
 func (cf *codeforces) loadAccount() (string, string) {
 	var handle string
-	tmp, ok := setting.Get("OnlineJudge.Codeforces.Handle", "CODEFORCES_HANDLE")
-	if !ok {
+	if tmp, ok := setting.Get("OnlineJudge.Codeforces.Handle", "CODEFORCES_HANDLE"); ok {
+		handle = tmp.(string)
+	} else {
 		handle = util.AskString("What is your Codeforces account id ?")
 		setting.Set("OnlineJudge.Codeforces.Handle", handle)
-	} else {
-		handle = tmp.(string)
 	}
 
 	var password string
-	tmp, ok = setting.Get("OnlineJudge.Codeforces.Password", "CODEFORCES_PASSWORD")
-	if !ok {
+	if tmp, ok := setting.Get("OnlineJudge.Codeforces.Password", "CODEFORCES_PASSWORD"); ok {
+		password = tmp.(string)
+	} else {
 		password = util.AskString("What is your Codeforces account password ?")
 		setting.Set("OnlineJudge.Codeforces.Password", password)
-	} else {
-		password = tmp.(string)
 	}
 
 	return handle, password

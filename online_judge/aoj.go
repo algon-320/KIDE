@@ -46,21 +46,19 @@ func (a *aoj) getLangID(lang language.Language) (string, error) {
 
 func (a *aoj) loadAccount() (string, string) {
 	var handle string
-	tmp, ok := setting.Get("OnlineJudge.AOJ.Handle", "AOJ_HANDLE")
-	if !ok {
+	if tmp, ok := setting.Get("OnlineJudge.AOJ.Handle", "AOJ_HANDLE"); ok {
+		handle = tmp.(string)
+	} else {
 		handle = util.AskString("What is your AOJ account id ?")
 		setting.Set("OnlineJudge.AOJ.Handle", handle)
-	} else {
-		handle = tmp.(string)
 	}
 
 	var password string
-	tmp, ok = setting.Get("OnlineJudge.AOJ.Password", "AOJ_PASSWORD")
-	if !ok {
+	if tmp, ok := setting.Get("OnlineJudge.AOJ.Password", "AOJ_PASSWORD"); ok {
+		password = tmp.(string)
+	} else {
 		password = util.AskString("What is your AOJ account password ?")
 		setting.Set("OnlineJudge.AOJ.Password", password)
-	} else {
-		password = tmp.(string)
 	}
 
 	return handle, password

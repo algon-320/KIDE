@@ -44,21 +44,19 @@ func (yc *yukicoder) getLangID(lang language.Language) (string, error) {
 
 func (yc *yukicoder) loadAccount() (string, string) {
 	var handle string
-	tmp, ok := setting.Get("OnlineJudge.yukicoder.Handle", "YUKICODER_HANDLE")
-	if !ok {
+	if tmp, ok := setting.Get("OnlineJudge.yukicoder.Handle", "YUKICODER_HANDLE"); ok {
+		handle = tmp.(string)
+	} else {
 		handle = util.AskString("What is your yukicoder account id (twitter id) ?")
 		setting.Set("OnlineJudge.yukicoder.Handle", handle)
-	} else {
-		handle = tmp.(string)
 	}
 
 	var password string
-	tmp, ok = setting.Get("OnlineJudge.yukicoder.Password", "YUKICODER_PASSWORD")
-	if !ok {
+	if tmp, ok := setting.Get("OnlineJudge.yukicoder.Password", "YUKICODER_PASSWORD"); ok {
+		password = tmp.(string)
+	} else {
 		password = util.AskString("What is your yukicoder account password (twitter password) ?")
 		setting.Set("OnlineJudge.yukicoder.Password", password)
-	} else {
-		password = tmp.(string)
 	}
 
 	return handle, password
