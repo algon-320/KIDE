@@ -172,8 +172,9 @@ func saveSourceFile(sourceFilename string, sourceCode []byte, p *online_judge.Pr
 	exeDir = filepath.Dir(exeDir)
 
 	var saveSourceFileDir string
+	var tmp interface{}
 	var ok bool
-	if tmp, ok := setting.Get("General.SaveSourceFileDirectory", ""); ok {
+	if tmp, ok = setting.Get("General.SaveSourceFileDirectory", ""); ok {
 		saveSourceFileDir = tmp.(string)
 		expanded := strings.Replace(saveSourceFileDir, "{EXE_DIR}", exeDir, 1)
 		if !util.FileExists(expanded) {
