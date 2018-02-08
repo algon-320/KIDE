@@ -1,6 +1,8 @@
 package util
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -26,6 +28,12 @@ func IsSameFile(path1, path2 string) (bool, error) {
 		return false, fmt.Errorf("cannot open `%s`", path2)
 	}
 	return reflect.DeepEqual(data1, data2), nil
+}
+
+// Sha256SumStr ... `data`のsha256sumを文字列として返す
+func Sha256SumStr(data []byte) string {
+	bytes := sha256.Sum256(data)
+	return hex.EncodeToString(bytes[:])
 }
 
 // FileCopy ... `targetPath`のファイルを`destinationPath`にコピーする

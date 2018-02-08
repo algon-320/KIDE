@@ -2,10 +2,13 @@ package language
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	"github.com/algon-320/KIDE/util"
@@ -67,7 +70,7 @@ func (l *languageBase) compile(sourcePath string) error {
 		return &ErrCompileError{}
 	}
 	util.DebugPrint("Successfully compiled!")
-	return copySourceFile(sourcePath)
+	return saveSourceHash(sourcePath)
 }
 
 // Run ... 実行
@@ -114,36 +117,44 @@ func (l *languageBase) Run(sourcePath string, input string, print bool) (string,
 }
 
 // utility ---------------------------------------------------------------------
-const PREV_SOURCE = "previous.txt" // TODO : previous.txt の名前をsettingで変えられるようにするべき
+const prevSourceHash = "previous.dat" // TODO : previous.dat の名前をsettingで変えられるようにするべき?
 func checkSkipCompile(sourcePath string) (bool, error) {
 	sourcePathAbs, _ := filepath.Abs(sourcePath)
 	edir, _ := os.Executable()
 	dir := filepath.Dir(edir)
-	prevSourcePath := filepath.Join(dir, PREV_SOURCE)
+	prevHashPath := filepath.Join(dir, prevSourceHash)
 
 	if !util.FileExists(sourcePathAbs) {
 		return false, fmt.Errorf(util.PrefixError + "No such source file.")
 	}
 
-	if util.FileExists(prevSourcePath) {
-		res, err := util.IsSameFile(prevSourcePath, sourcePathAbs)
+	if util.FileExists(prevHashPath) {
+		prevHash, err := ioutil.ReadFile(prevHashPath)
 		if err != nil {
 			return false, err
 		}
-		if res {
+		sourceBytes, err := ioutil.ReadFile(sourcePathAbs)
+		if err != nil {
+			return false, err
+		}
+		hash := sha256.Sum256(sourceBytes)
+		if reflect.DeepEqual(prevHash, hash[:]) {
 			return true, nil
 		}
 	}
 	return false, nil
 }
-func copySourceFile(sourcePath string) error {
+func saveSourceHash(sourcePath string) error {
 	p, _ := os.Executable()
 	dir := filepath.Dir(p)
 
 	sourcePathAbs, _ := filepath.Abs(sourcePath)
-	if err := util.FileCopy(sourcePathAbs, filepath.Join(dir, PREV_SOURCE)); err != nil {
+	sourceBytes, err := ioutil.ReadFile(sourcePathAbs)
+	if err != nil {
 		return err
 	}
-	fmt.Println(fmt.Sprintf(util.PrefixInfo+"Copied the souce file to `%s`", PREV_SOURCE))
+	hash := sha256.Sum256(sourceBytes)
+	ioutil.WriteFile(filepath.Join(dir, prevSourceHash), hash[:], 0666)
+	fmt.Println(fmt.Sprintf(util.PrefixInfo+"Saved the hash of souce file to `%s`", prevSourceHash))
 	return nil
 }
