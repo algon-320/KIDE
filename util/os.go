@@ -15,7 +15,7 @@ func FileExists(filepath string) bool {
 	return err == nil
 }
 
-// IsSameFile ...`path1`、`path2`のファイルの内容が同じかどうかを返す
+// IsSameFile ...`path1`、`path2`のファイルの内容が同じかどうかを返す (バイト列比較)
 func IsSameFile(path1, path2 string) (bool, error) {
 	data1, err := ioutil.ReadFile(path1)
 	if err != nil {
