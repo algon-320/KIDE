@@ -6,6 +6,8 @@ import (
 	"os"
 	"regexp"
 
+	"github.com/algon-320/KIDE/snippet_manager"
+
 	"github.com/algon-320/KIDE/language"
 	"github.com/algon-320/KIDE/online_judge"
 	"github.com/algon-320/KIDE/util"
@@ -137,6 +139,12 @@ func cmdAtCoderConv(c *cli.Context) error {
 	return nil
 }
 
+func cmdSnippetManager(c *cli.Context) error {
+	sn := snippet_manager.ExportSnippets(snippet_manager.VScode)
+	fmt.Println(sn)
+	return nil
+}
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "KIDE"
@@ -216,6 +224,10 @@ func main() {
 			Name:   "atcoderconv",
 			Usage:  "convert old atcoder url to beta url",
 			Action: cmdAtCoderConv,
+		},
+		{
+			Name:   "snippet",
+			Action: cmdSnippetManager,
 		},
 	}
 
