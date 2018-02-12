@@ -8,7 +8,7 @@
 
 ## インストール
 KIDEはGo言語で書かれているので、まずGo言語をインストールしてください。
-その後、次のコマンドでリポジトリのクローンとビルドを行います。
+その後、次のコマンドでダウンロード・ビルドを行います。
 ```sh
 $ go get github.com/algon-320/KIDE
 $ cd $GOPATH/src/github.com/algon-320/KIDE
