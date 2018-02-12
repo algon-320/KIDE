@@ -140,8 +140,26 @@ func cmdAtCoderConv(c *cli.Context) error {
 }
 
 func cmdSnippetManager(c *cli.Context) error {
-	sn := snippet_manager.ExportSnippets(snippet_manager.VScode)
-	fmt.Println(sn)
+	var editorList = []string{"markdown (library output)"}
+	for _, e := range snippet_manager.EditorList {
+		editorList = append(editorList, e.Name())
+	}
+	i := util.AskChoose(editorList, "どのエディタ向けのスニペットを生成しますか")
+	if i == 0 {
+		md := snippet_manager.GenerateMarkdown()
+		fmt.Println(md)
+	} else {
+		editorName := editorList[i]
+		var editor snippet_manager.Editor
+		for _, e := range snippet_manager.EditorList {
+			if e.Name() == editorName {
+				editor = e
+				break
+			}
+		}
+		snip := snippet_manager.ExportSnippets(editor)
+		fmt.Println(snip)
+	}
 	return nil
 }
 

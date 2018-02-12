@@ -10,6 +10,10 @@ var VScode *vscode
 
 type vscode struct{}
 
+func (editor *vscode) Name() string {
+	return "vscode"
+}
+
 func (editor *vscode) generateSnippets(snips []Snippet) string {
 	temp := []Snippet{}
 	for _, snip := range snips {

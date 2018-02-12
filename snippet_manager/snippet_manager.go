@@ -16,7 +16,13 @@ type Snippet map[string]string
 
 // Editor ... スニペットを出力する対象のテキストエディタ
 type Editor interface {
+	Name() string
 	generateSnippets([]Snippet) string
+}
+
+// EditorList ... 利用可能なエディタの一覧
+var EditorList = []Editor{
+	VScode,
 }
 
 var rootSnippetsDir string
