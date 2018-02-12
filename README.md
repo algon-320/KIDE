@@ -10,8 +10,9 @@
 KIDEはGo言語で書かれているので、まずGo言語をインストールしてください。
 その後、次のコマンドでリポジトリのクローンとビルドを行います。
 ```sh
-$ git clone git@github.com:algon-320/KIDE.git
-$ go build -i
+$ go get github.com/algon-320/KIDE
+$ cd $GOPATH/src/github.com/algon-320/KIDE
+$ go build
 ```
 このコマンドを実行すると、ディレクトリに`KIDE`という実行ファイルが作成されるはずです。
 
@@ -40,17 +41,17 @@ $ go build -i
 このプログラムは、実行ファイルの存在するディレクトリに各種ファイルを生成する。
 
 
-## 主な機能
-- `kide run`: コンパイル & 実行
-- `kide dl {問題のURL}`: 問題のダウンロード
-- `kide tester {問題id}`: テスト
-- `kide submit {問題id}`: 提出
-- `kide snippet`: スニペット管理
+## 主な機能(サブコマンド)
+- `run`: コンパイル & 実行
+- `dl {問題のURL}`: 問題のダウンロード
+- `tester {問題id}`: テスト
+- `submit {問題id}`: 提出
+- `snippet`: スニペット管理
     - エディタ用のスニペット形式で出力
     - ライブラリ用のMarkdown出力
 
 ## サブコマンドの詳細
-### `kide run`
+### `run`
 カレントディレクトリにあるソースコードをコンパイル・実行する。
 
 カレントディレクトリに指定した言語のソースファイルが1つしかない場合はそれをコンパイル・実行する。
@@ -68,7 +69,7 @@ $ go build -i
     - デフォルトはC++
 
 
-### `kide dl {URL}`
+### `dl {URL}`
 指定した問題の情報とサンプル入出力をローカルに保存する。
 AtCoder、Codeforces、yukicoder、AOJに対応しているが、正しく読み取れない問題もあるので注意。(ほとんど大丈夫なはず)
 
@@ -82,13 +83,13 @@ AtCoder、Codeforces、yukicoder、AOJに対応しているが、正しく読み
 
 AtCoder、Codeforces、yukicoderの場合、コンテストの問題一覧ページのURLを投げることで、一括して問題をダウンロードすることも出来る。
 
-`kide view`で今保存されている問題一覧を表示出来る。引数で問題idを指定すると詳細を表示。
+`view`で今保存されている問題一覧を表示出来る。引数で問題idを指定すると詳細を表示。
 
 同じ問題IDの場合上書きされることに注意。
 (例えば、あるコンテストのA問題をダウンロードして、別のコンテストのA問題をダウンロードすると
 初めにダウンロードしたA問題は上書きされて消えてしまう。)
 
-### `kide tester {問題id}`
+### `tester {問題id}`
 指定された問題のサンプル入出力をテストする。`run`と同じようにコンパイルされた後に、自動でテストが行われる。
 全て正解した場合は提出するか尋ねられ、そのまま提出できる。
 
@@ -96,11 +97,11 @@ AtCoder、Codeforces、yukicoderの場合、コンテストの問題一覧ペー
 `--case`、`-c`: 番号を指定すると特定のサンプルケースをテスト出来る
 
 
-### `kide submit {問題id}`
+### `submit {問題id}`
 指定した問題に対してソースコードを提出する。
 
 
-### `kide snippet`
+### `snippet`
 対応しているエディタ用のスニペットを出力したり、ライブラリ用にMarkdownを出力する。
 これらは標準出力に書き込まれるため、必要に応じてリダイレクションなどでファイルに出力する。
 
@@ -114,7 +115,7 @@ AtCoder、Codeforces、yukicoderの場合、コンテストの問題一覧ペー
 Markdown出力する際にそのまま出力されるので、Markdown記法を用いることが出来る。
 
 - pandocなどでHTMLやTeX形式に変換することが出来て便利そう
-- `kide snippet`コマンド
+- `snippet`コマンド
 - $F_i = F_{i-1} + F_{i-2}$
 
 <*CODE>
@@ -131,21 +132,22 @@ printf("sample snippet\n");
 
 
 ## 使い方
-KIDEをダウンロードコンパイルしてある前提で、[AtCoder Practice Contest](https://beta.atcoder.jp/contests/practice)を例に説明します。
+KIDEをダウンロードコンパイルしてあり、`KIDE`という実行ファイルをパスの通ったディレクトリに配置してあるという
+前提で、[AtCoder Practice Contest](https://beta.atcoder.jp/contests/practice)を例に説明します。
 
 0. 適当なディレクトリに入る
 1. ウェブブラウザでBeta版AtCoderの「A - はじめてのあっとこーだー（Welcome to AtCoder）」を開く [link](https://beta.atcoder.jp/contests/practice/tasks/practice_1)
 2. 問題のURLをコピーする
-3. `$ kide dl https://beta.atcoder.jp/contests/practice/tasks/practice_1`を実行する
+3. `$ KIDE dl https://beta.atcoder.jp/contests/practice/tasks/practice_1`を実行する
 4. AtCoderアカウントのユーザ名・パスワードを聞かれるので入力
 5. サンプルケースが保存される。
 6. ソースコードを作成する(例としてC++を想定)
-    ここでディレクトリに`.cpp`のファイルが複数ある場合、`kide run`、`kide tester`、`kide submit`でコンパイルする対象を選択する画面が出る。
+    ここでディレクトリに`.cpp`のファイルが複数ある場合、`KIDE run`、`KIDE tester`、`KIDE submit`でコンパイルする対象を選択する画面が出る。
 7. テストする
-    - C++以外の言語を使う場合は`$ kide run --language Python`などと指定すること
-    - `$ kide run`を実行すると先ほど書いたソースコードがコンパイルされて実行される（実行するだけなので、入力などは自分で書く）
-    - `$ kide tester A --case 1`を実行するとサンプル1がテストされる
-    - `$ kide tester A`を実行するとサンプル1、サンプル2がテストされ、どちらとも正解した場合はこのまま提出するかを尋ねられる
+    - C++以外の言語を使う場合は`$ KIDE run --language Python`などと指定すること
+    - `$ KIDE run`を実行すると先ほど書いたソースコードがコンパイルされて実行される（実行するだけなので、入力などは自分で書く）
+    - `$ KIDE tester A --case 1`を実行するとサンプル1がテストされる
+    - `$ KIDE tester A`を実行するとサンプル1、サンプル2がテストされ、どちらとも正解した場合はこのまま提出するかを尋ねられる
 8. 提出する
     - `tester`コマンドで自動提出しない場合は`submit`コマンドを用いる
     - `$ submit A`で提出できる。この場合、サンプルのテストを行わずに提出するので注意。
