@@ -62,6 +62,7 @@ func tester(lang language.Language, problemID string, caseID int) error {
 				return err
 			}
 
+			// WA
 			if out != c.Output {
 				util.PrintTitle(30, 4, "=", "input")
 				fmt.Print(c.Input)

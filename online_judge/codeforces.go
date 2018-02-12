@@ -3,6 +3,7 @@ package online_judge
 import (
 	"fmt"
 	"html"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -73,13 +74,13 @@ func (cf *codeforces) login() (*browser.Browser, error) {
 	if cjar != nil {
 		br.SetCookieJar(cjar)
 		if cf.checkLoggedin(br) {
-			fmt.Println(util.PrefixInfo + "Loaded session of Codeforces.")
+			fmt.Fprintln(os.Stderr, util.PrefixInfo+"Loaded session of Codeforces.")
 			return br, nil
 		}
 	}
 
 	// 新たにログイン
-	fmt.Println(util.PrefixInfo + "Login to Codeforces...")
+	fmt.Fprintln(os.Stderr, util.PrefixInfo+"Login to Codeforces...")
 
 	if err := br.Open(cf.loginURL); err != nil {
 		return nil, &ErrFailedToLogin{oj_name: cf.Name(), message: "Failed to open login page."}
@@ -169,7 +170,7 @@ func (cf *codeforces) Submit(p *Problem, sourceCode string, lang language.Langua
 		return nil, &ErrFailedToSubmit{message: "might be the same solution."}
 	}
 
-	fmt.Println(util.PrefixInfo + "Your solution was successfully submitted.")
+	fmt.Fprintln(os.Stderr, util.PrefixInfo+"Your solution was successfully submitted.")
 
 	var res JudgeResult
 	res.Date = time.Now()
@@ -191,7 +192,7 @@ func (cf *codeforces) Submit(p *Problem, sourceCode string, lang language.Langua
 		if v == "false" {
 			break
 		}
-		fmt.Println(status)
+		fmt.Fprintln(os.Stderr, status)
 		time.Sleep(CheckInterval)
 	}
 
@@ -287,7 +288,7 @@ func (cf *codeforces) NewProblem(url string) error {
 			// fmt.Println(problemURL)
 			err := downloadProblem(problemURL)
 			if err != nil {
-				fmt.Println(util.PrefixError + fmt.Sprintf("%s", err))
+				fmt.Fprintln(os.Stderr, util.PrefixError+fmt.Sprintf("%s", err))
 			}
 		})
 		return nil

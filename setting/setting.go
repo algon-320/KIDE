@@ -28,19 +28,19 @@ func init() {
 	os.Chdir(exeDir)
 
 	if !util.FileExists(SettingFilename) {
-		fmt.Println(util.PrefixCaution + "No setting file `" + SettingFilename + "`.")
+		fmt.Fprintln(os.Stderr, util.PrefixCaution+"No setting file `"+SettingFilename+"`.")
 		return
 	}
 
 	bytes, err := ioutil.ReadFile(SettingFilename)
 	if err != nil {
-		fmt.Println(util.PrefixError+"File open error:", err)
+		fmt.Fprintln(os.Stderr, util.PrefixError+"File open error:", err)
 		return
 	}
 
 	err = json.Unmarshal(bytes, &wrapper)
 	if err != nil {
-		fmt.Println(util.PrefixError+"JSON Unmarshal error:", err)
+		fmt.Fprintln(os.Stderr, util.PrefixError+"JSON Unmarshal error:", err)
 		return
 	}
 }
@@ -105,7 +105,7 @@ func save() {
 
 	jsonBytes, err := json.Marshal(wrapper)
 	if err != nil {
-		fmt.Println(util.PrefixError+"JSON Marshal error:", err)
+		fmt.Fprintln(os.Stderr, util.PrefixError+"JSON Marshal error:", err)
 		return
 	}
 
@@ -114,7 +114,7 @@ func save() {
 
 	err = ioutil.WriteFile(SettingFilename, buf.Bytes(), 0600)
 	if err != nil {
-		fmt.Println(util.PrefixError+"File write error:", err)
+		fmt.Fprintln(os.Stderr, util.PrefixError+"File write error:", err)
 		return
 	}
 

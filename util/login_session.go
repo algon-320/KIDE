@@ -28,14 +28,14 @@ func LoadLoginSession(filename string, cookieURL string) *cookiejar.Jar {
 
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
-		fmt.Println(PrefixError+"File open error:", err)
+		fmt.Fprintln(os.Stderr, PrefixError+"File open error:", err)
 		return nil
 	}
 
 	var cookies []*http.Cookie
 	err = json.Unmarshal(bytes, &cookies)
 	if err != nil {
-		fmt.Println(PrefixError+"JSON Unmarshal error:", err)
+		fmt.Fprintln(os.Stderr, PrefixError+"JSON Unmarshal error:", err)
 		return nil
 	}
 	jar, _ := cookiejar.New(nil)
@@ -55,14 +55,14 @@ func SaveLoginSession(filename string, cookies []*http.Cookie) {
 
 	bytes, err := json.Marshal(cookies)
 	if err != nil {
-		fmt.Println(PrefixError+"JSON Marshal error:", err)
+		fmt.Fprintln(os.Stderr, PrefixError+"JSON Marshal error:", err)
 		return
 	}
 
 	err = ioutil.WriteFile(filename, bytes, 0600)
 	if err != nil {
-		fmt.Println(PrefixError+"File write error:", err)
+		fmt.Fprintln(os.Stderr, PrefixError+"File write error:", err)
 		return
 	}
-	fmt.Println(PrefixInfo + fmt.Sprintf("Saved session as `%s`", filename))
+	fmt.Fprintln(os.Stderr, PrefixInfo+fmt.Sprintf("Saved session as `%s`", filename))
 }
