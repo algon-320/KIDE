@@ -27,6 +27,7 @@ var EditorList = []Editor{
 
 var rootSnippetsDir string
 var snippets []Snippet
+var loaded = false
 
 // findSnip ... ディレクトリ`dir`以下から.snipのファイルを再帰的に検索してパスの一覧を返す
 func findSnip(dir string) []string {
@@ -48,7 +49,8 @@ func findSnip(dir string) []string {
 	return paths
 }
 
-func init() {
+// スニペットファイル読み込み
+func load() {
 	tmp, ok := setting.Get(settingRootDir, "")
 	if ok {
 		rootSnippetsDir = tmp.(string)
@@ -72,10 +74,16 @@ func init() {
 		}
 		snippets = append(snippets, snip)
 	}
+
+	loaded = true
 }
 
 // GenerateMarkdown ... Markdownを生成
 func GenerateMarkdown() string {
+	if !loaded {
+		load()
+	}
+
 	var md string
 	for _, snip := range snippets {
 		var str string
@@ -103,5 +111,9 @@ func GenerateTex() {
 
 // ExportSnippets ... スニペットを`editor`用の形式で出力する
 func ExportSnippets(editor Editor) string {
+	if !loaded {
+		load()
+	}
+
 	return editor.generateSnippets(snippets)
 }
