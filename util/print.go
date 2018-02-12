@@ -24,7 +24,7 @@ const (
 
 // DebugPrint ... デバックメッセージを出力する
 func DebugPrint(text string) {
-	// fmt.Println(PrefixDebug + text)
+	// fmt.Fprintln(os.Stderr, PrefixDebug + text)
 }
 
 // PrintTable ... テーブルを書く

@@ -3,6 +3,7 @@ package online_judge
 import (
 	"fmt"
 	"html"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -73,13 +74,13 @@ func (ac *atcoder) login() (*browser.Browser, error) {
 	if cjar != nil {
 		br.SetCookieJar(cjar)
 		if ac.checkLoggedin(br) {
-			fmt.Println(util.PrefixInfo + "Loaded session of AtCoder.")
+			fmt.Fprintln(os.Stderr, util.PrefixInfo+"Loaded session of AtCoder.")
 			return br, nil
 		}
 	}
 
 	// 新たにログイン
-	fmt.Println(util.PrefixInfo + "login to AtCoder ...")
+	fmt.Fprintln(os.Stderr, util.PrefixInfo+"login to AtCoder ...")
 
 	if err := br.Open(ac.loginURL); err != nil {
 		return nil, &ErrFailedToLogin{oj_name: ac.Name(), message: "Failed to open login page."}
@@ -180,7 +181,7 @@ func (ac *atcoder) Submit(p *Problem, sourceCode string, lang language.Language)
 		return nil, &ErrFailedToSubmit{message: "might be empty."}
 	}
 
-	fmt.Println(util.PrefixInfo + "Your solution was successfully submitted.")
+	fmt.Fprintln(os.Stderr, util.PrefixInfo+"Your solution was successfully submitted.")
 
 	var res JudgeResult
 	res.Date = time.Now()
@@ -227,14 +228,14 @@ waiting:
 		}
 
 		if watingCnt == 0 {
-			fmt.Print(util.PrefixInfo + "waiting for judge .")
+			fmt.Fprint(os.Stderr, util.PrefixInfo+"waiting for judge .")
 		} else {
-			fmt.Print(".")
+			fmt.Fprint(os.Stderr, ".")
 		}
 		watingCnt++
 		time.Sleep(CheckInterval)
 	}
-	fmt.Print("\n")
+	fmt.Fprint(os.Stderr, "\n")
 
 	if res.Status != JudgeStatusUNK {
 		return &res, nil
@@ -311,10 +312,10 @@ func (ac *atcoder) NewProblem(url string) error {
 		doc.Find("tbody > tr").Each(func(_ int, tr *goquery.Selection) {
 			problemURL, _ := tr.Find("td:first-of-type > a").Attr("href")
 			problemURL, _ = br.ResolveStringUrl(problemURL)
-			// fmt.Println(problemURL)
+			// fmt.Fprintln(os.Stderr, problemURL)
 			err := downloadProblem(problemURL)
 			if err != nil {
-				fmt.Println(util.PrefixError + fmt.Sprintf("%s", err))
+				fmt.Fprintln(os.Stderr, util.PrefixError+fmt.Sprintf("%s", err))
 			}
 		})
 		return nil

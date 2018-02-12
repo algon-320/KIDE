@@ -109,7 +109,7 @@ func (l *languageBase) Run(sourcePath string, input string, print bool) (string,
 	cmd.Stderr = stderr
 
 	if err := cmd.Run(); err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		return "", &ErrRuntimeError{}
 	}
 
@@ -155,6 +155,6 @@ func saveSourceHash(sourcePath string) error {
 	}
 	hash := sha256.Sum256(sourceBytes)
 	ioutil.WriteFile(filepath.Join(dir, prevSourceHash), hash[:], 0666)
-	fmt.Println(fmt.Sprintf(util.PrefixInfo+"Saved the hash of souce file to `%s`", prevSourceHash))
+	fmt.Fprintln(os.Stderr, fmt.Sprintf(util.PrefixInfo+"Saved the hash of souce file to `%s`", prevSourceHash))
 	return nil
 }

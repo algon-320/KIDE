@@ -3,6 +3,7 @@ package language
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/algon-320/KIDE/util"
@@ -31,7 +32,7 @@ func GetLanguage(name string) Language {
 			return *lang
 		}
 	}
-	fmt.Println(util.PrefixCaution + "unsupported language.")
+	fmt.Fprintln(os.Stderr, util.PrefixCaution+"unsupported language.")
 	return CPP // TODO: settingから読むべき
 }
 

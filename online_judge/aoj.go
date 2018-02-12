@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -215,14 +216,14 @@ func (a *aoj) Submit(p *Problem, sourceCode string, lang language.Language) (*Ju
 		}
 
 		if watingCnt == 0 {
-			fmt.Print(util.PrefixInfo + "waiting for judge .")
+			fmt.Fprint(os.Stderr, util.PrefixInfo+"waiting for judge .")
 		} else {
-			fmt.Print(".")
+			fmt.Fprint(os.Stderr, ".")
 		}
 		watingCnt++
 		time.Sleep(CheckInterval)
 	}
-	fmt.Print("\n")
+	fmt.Fprint(os.Stderr, "\n")
 
 	return &judgeRes, nil
 }
@@ -253,7 +254,7 @@ func (a *aoj) NewProblem(url string) error {
 		re := regexp.MustCompile("http://judge.u-aizu.ac.jp/onlinejudge/description.jsp\\?id=(.+?)(?:&.*)?$")
 		group := re.FindSubmatch([]byte(problemURL))
 		if group == nil {
-			fmt.Println(group)
+			fmt.Fprintln(os.Stderr, group)
 			return &ErrInvalidProblemURL{url: problemURL}
 		}
 		p.ID = string(group[1])
@@ -291,10 +292,7 @@ func (a *aoj) NewProblem(url string) error {
 		return p.Save()
 	}
 
-	if err := downloadProblem(url); err != nil {
-		return err
-	}
-	return nil
+	return downloadProblem(url)
 }
 
 func (a *aoj) IsValidURL(url string) (bool, bool) {
