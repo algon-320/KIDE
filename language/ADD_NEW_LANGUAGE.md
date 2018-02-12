@@ -7,3 +7,4 @@
         - 細かい動作を変更する際はそれぞれのメソッドを実装する
 3. language.go の`languageList`に新しい言語を追加する。
 4. OnlineJudgeに言語を追加する(各オンラインジャッジのソースコードの`getLangID`に追加する)
+5. READMEに書くと親切
