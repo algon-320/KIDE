@@ -78,7 +78,7 @@ func GenerateMarkdown() string {
 		str += fmt.Sprintf("%s\n", snip["NOTE"])
 		str += fmt.Sprintf("### Code\n")
 		str += fmt.Sprintf("```cpp\n")
-		str += fmt.Sprintf("%s", snip["CODE"])
+		str += fmt.Sprintf("%s\n", snip["CODE"])
 		str += fmt.Sprintf("```\n\n")
 		md += str
 	}
