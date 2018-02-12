@@ -6,6 +6,16 @@
 
 ----
 
+## インストール
+KIDEはGo言語で書かれているので、まずGo言語をインストールしてください。
+その後、次のコマンドでリポジトリのクローンとビルドを行います。
+```sh
+$ git clone git@github.com:algon-320/KIDE.git
+$ go build -i
+```
+このコマンドを実行すると、ディレクトリに`KIDE`という実行ファイルが作成されるはずです。
+
+
 ## 仕様
 
 ### 対応しているオンラインジャッジ
@@ -121,7 +131,7 @@ printf("sample snippet\n");
 
 
 ## 使い方
-KIDEをダウンロードコンパイルしてある前提で、[AtCoder Practice Contest](https://beta.atcoder.jp/contests/practice)を例に説明する。
+KIDEをダウンロードコンパイルしてある前提で、[AtCoder Practice Contest](https://beta.atcoder.jp/contests/practice)を例に説明します。
 
 0. 適当なディレクトリに入る
 1. ウェブブラウザでBeta版AtCoderの「A - はじめてのあっとこーだー（Welcome to AtCoder）」を開く [link](https://beta.atcoder.jp/contests/practice/tasks/practice_1)
