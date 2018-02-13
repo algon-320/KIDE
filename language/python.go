@@ -12,19 +12,18 @@ const (
 
 func init() {
 	var compileCmd, runningCmd string
-	if v, ok := setting.Get("Language.Python.CompileCommand", ""); ok {
+	if v, ok := setting.Get("Language.Python2.CompileCommand", ""); ok {
 		compileCmd = v.(string)
 	} else {
 		compileCmd = defaultCompileCommandPYTHON
-		setting.Set("Language.Python.CompileCommand", compileCmd)
+		setting.Set("Language.Python2.CompileCommand", compileCmd)
 	}
-	if v, ok := setting.Get("Language.Python.RunningCommand", ""); ok {
+	if v, ok := setting.Get("Language.Python2.RunningCommand", ""); ok {
 		runningCmd = v.(string)
 	} else {
 		runningCmd = defaultRunningCommandPYTHON
-		setting.Set("Language.Python.RunningCommand", runningCmd)
+		setting.Set("Language.Python2.RunningCommand", runningCmd)
 	}
-
 	PYTHON2 = &languageBase{
 		name:           "Python2",
 		fileExtension:  ".py",
@@ -32,6 +31,21 @@ func init() {
 		runningCommand: defaultRunningCommandPYTHON,
 		commentBegin:   "# ",
 		commentEnd:     "",
+	}
+
+	compileCmd = ""
+	runningCmd = ""
+	if v, ok := setting.Get("Language.Python3.CompileCommand", ""); ok {
+		compileCmd = v.(string)
+	} else {
+		compileCmd = defaultCompileCommandPYTHON
+		setting.Set("Language.Python3.CompileCommand", compileCmd)
+	}
+	if v, ok := setting.Get("Language.Python3.RunningCommand", ""); ok {
+		runningCmd = v.(string)
+	} else {
+		runningCmd = defaultRunningCommandPYTHON
+		setting.Set("Language.Python3.RunningCommand", runningCmd)
 	}
 	PYTHON3 = &languageBase{
 		name:           "Python3",
