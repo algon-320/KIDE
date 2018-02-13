@@ -12,8 +12,8 @@ import (
 	"github.com/algon-320/KIDE/language"
 	"github.com/algon-320/KIDE/setting"
 	"github.com/algon-320/KIDE/util"
-	"github.com/headzoo/surf"
 	"github.com/headzoo/surf/browser"
+	"gopkg.in/headzoo/surf.v1"
 )
 
 type atcoder struct {
@@ -163,10 +163,10 @@ func (ac *atcoder) Submit(p *Problem, sourceCode string, lang language.Language)
 		if err := fm.Input("sourceCode", sourceCode); err != nil {
 			continue
 		}
-		if err := fm.Input("data.LanguageId", langID); err != nil {
+		if err := fm.SelectByOptionValue("data.LanguageId", langID); err != nil {
 			continue
 		}
-		if err := fm.Input("data.TaskScreenName", p.Name); err != nil {
+		if err := fm.SelectByOptionValue("data.TaskScreenName", p.Name); err != nil {
 			continue
 		}
 

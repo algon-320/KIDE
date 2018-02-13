@@ -12,8 +12,8 @@ import (
 	"github.com/algon-320/KIDE/language"
 	"github.com/algon-320/KIDE/setting"
 	"github.com/algon-320/KIDE/util"
-	"github.com/headzoo/surf"
 	"github.com/headzoo/surf/browser"
+	"gopkg.in/headzoo/surf.v1"
 )
 
 type codeforces struct {
@@ -151,10 +151,10 @@ func (cf *codeforces) Submit(p *Problem, sourceCode string, lang language.Langua
 			continue
 		}
 
-		if err := fm.Input("programTypeId", langID); err != nil {
+		if err := fm.SelectByOptionValue("programTypeId", langID); err != nil {
 			continue
 		}
-		if err := fm.Input("submittedProblemIndex", p.ID); err != nil {
+		if err := fm.SelectByOptionValue("submittedProblemIndex", p.ID); err != nil {
 			continue
 		}
 		if err := fm.Input("source", sourceCode); err != nil {

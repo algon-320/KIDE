@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/headzoo/surf/util"
+	"gopkg.in/headzoo/surf.v1/util"
 )
 
 // LoadLoginSession ... セッションファイルを読み込む

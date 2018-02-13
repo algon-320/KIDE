@@ -10,8 +10,8 @@ import (
 	"github.com/algon-320/KIDE/language"
 	"github.com/algon-320/KIDE/setting"
 	"github.com/algon-320/KIDE/util"
-	"github.com/headzoo/surf"
 	"github.com/headzoo/surf/browser"
+	"gopkg.in/headzoo/surf.v1"
 )
 
 type yukicoder struct {
@@ -152,7 +152,7 @@ func (yc *yukicoder) Submit(p *Problem, sourceCode string, lang language.Languag
 			continue
 		}
 
-		if err := fm.Input("lang", langID); err != nil {
+		if err := fm.SelectByOptionValue("lang", langID); err != nil {
 			continue
 		}
 		if err := fm.Input("source", sourceCode); err != nil {
