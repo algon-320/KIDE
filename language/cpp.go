@@ -6,7 +6,7 @@ import "github.com/algon-320/KIDE/setting"
 var CPP Language
 
 const (
-	defaultCompileCommandCPP = "g++ -std=c++14 -o a.out {SOURCEFILE_PATH}"
+	defaultCompileCommandCPP = "g++ -std=c++11 -o a.out {SOURCEFILE_PATH}"
 	defaultRunningCommandCPP = "./a.out"
 )
 
