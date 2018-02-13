@@ -31,7 +31,8 @@ $ go build
 |:----:|:------------------:|:-------------------:|
 | C++ | "C++" | ".cpp" |
 | Java | "Java" | ".java" |
-| Python | "Python" | ".py" |
+| Python2 | "Python2" | ".py" |
+| Python3 | "Python3" | ".py" |
 
 
 ### 対応しているエディタ(スニペット用)

@@ -21,7 +21,8 @@ type Language interface {
 
 var languageList = []*Language{
 	&CPP,
-	&PYTHON,
+	&PYTHON2,
+	&PYTHON3,
 	&JAVA,
 }
 

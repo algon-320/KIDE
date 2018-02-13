@@ -36,8 +36,10 @@ func (a *aoj) getLangID(lang language.Language) (string, error) {
 	switch lang {
 	case language.CPP:
 		return "C++14", nil // C++14
-	case language.PYTHON:
+	case language.PYTHON2:
 		return "Python", nil // Python2
+	case language.PYTHON3:
+		return "Python3", nil // Python3
 	case language.JAVA:
 		return "JAVA", nil // JAVA
 	default:

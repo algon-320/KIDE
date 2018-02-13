@@ -35,8 +35,10 @@ func (cf *codeforces) getLangID(lang language.Language) (string, error) {
 	switch lang {
 	case language.CPP:
 		return "50", nil // 50 : GNU G++14 6.2.0
-	case language.PYTHON:
+	case language.PYTHON2:
 		return "7", nil // 7 : Python 2.7.12
+	case language.PYTHON3:
+		return "31", nil // 31 : Python 3.6
 	case language.JAVA:
 		return "36", nil // Java 1.8.0_131
 	default:

@@ -2,8 +2,8 @@ package language
 
 import "github.com/algon-320/KIDE/setting"
 
-// PYTHON ... Python
-var PYTHON Language
+// PYTHON2 ... Python
+var PYTHON2, PYTHON3 Language
 
 const (
 	defaultCompileCommandPYTHON = ""
@@ -25,15 +25,22 @@ func init() {
 		setting.Set("Language.Python.RunningCommand", runningCmd)
 	}
 
-	PYTHON = &languageBase{
-		name:           "Python",
+	PYTHON2 = &languageBase{
+		name:           "Python2",
 		fileExtension:  ".py",
 		compileCommand: defaultCompileCommandPYTHON,
 		runningCommand: defaultRunningCommandPYTHON,
 		commentBegin:   "# ",
 		commentEnd:     "",
 	}
-
+	PYTHON3 = &languageBase{
+		name:           "Python3",
+		fileExtension:  ".py",
+		compileCommand: defaultCompileCommandPYTHON,
+		runningCommand: defaultRunningCommandPYTHON,
+		commentBegin:   "# ",
+		commentEnd:     "",
+	}
 }
 
 type python struct {
