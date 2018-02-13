@@ -27,12 +27,17 @@ $ go build
 
 
 ### 対応している言語
-| 言語 | 指定するときの文字列 | ソースファイル拡張子 |
-|:----:|:------------------:|:-------------------:|
-| C++ | "C++" | ".cpp" |
-| Java | "Java" | ".java" |
-| Python2 | "Python2" | ".py" |
-| Python3 | "Python3" | ".py" |
+| 言語 | 指定するときの文字列 | ソースファイル拡張子 | デフォルトのコンパイルコマンド | デフォルトの実行コマンド |
+|:----:|:----:|:----:|:----:|:----:|
+| C++ | "C++" | ".cpp" | `g++ -std=c++11 -o a.out {SOURCEFILE_PATH}` | `./a.out` |
+| Java | "Java" | ".java" | `javac {SOURCEFILE_PATH}` | `java Main` |
+| Python2 | "Python2" | ".py" | 無し | `python {SOURCEFILE_PATH}` |
+| Python3 | "Python3" | ".py" | 無し | `python {SOURCEFILE_PATH}` |
+
+コンパイルコマンド・実行コマンドは`settings.json`で変更できる。
+
+言語は比較的容易に追加できる。詳しくは`language/ADD_NEW_LANGUAGE.md`を参照。
+
 
 
 ### 対応しているエディタ(スニペット用)
