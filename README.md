@@ -47,12 +47,13 @@ $ go build
 このプログラムは、実行ファイルの存在するディレクトリに各種ファイルを生成する。
 
 
-## 主な機能(サブコマンド)
-- `run`: コンパイル & 実行
-- `dl {問題のURL}`: 問題のダウンロード
-- `tester {問題id}`: テスト
-- `submit {問題id}`: 提出
-- `snippet`: スニペット管理
+## 主な機能
+- `kide run`: コンパイル & 実行
+- `kide dl {問題のURL}`: 問題のダウンロード
+- `kide tester {問題id}`: テスト
+- `kide submit {問題id}`: 提出
+- `kide processer`: ソースコードを整形する（提出前にも適用される）
+- `kide snippet`: スニペット管理
     - エディタ用のスニペット形式で出力
     - ライブラリ用のMarkdown出力
 
@@ -67,6 +68,7 @@ $ go build
 また、前回コンパイルした時とソースコードの内容が一致している場合、コンパイルはスキップされてそのまま実行される。(コンパイルの必要な言語)
 
 コンパイルコマンド・実行コマンドは、settings.jsonで指定することが出来る。
+
 設定項目が存在しない場合は基本的にデフォルトのものが使用される。
 
 オプション
@@ -103,8 +105,21 @@ AtCoder、Codeforces、yukicoderの場合、コンテストの問題一覧ペー
 `--case`、`-c`: 番号を指定すると特定のサンプルケースをテスト出来る
 
 
-### `submit {問題id}`
-指定した問題に対してソースコードを提出する。
+### `kide submit {問題id}`
+指定した問題に対してソースコードを提出する。ジャッジ結果がACだった場合にソースコードを保存することも出来る。
+（初回に保存するか尋ねられる。`settings.json`で変更可能。）
+
+
+### `kide processer`
+`settings.json`に`General->SourcecodeProcess->Commnad`で実行コマンドが設定されている場合にソースコードを整形することが出来る。設定しなければ、ソースコードがそのまま整形後のものとして扱われるため、意識する必要はない。
+
+サブコマンド`kide processer`では、カレントディレクトリの対象ソースコードを整形し、その結果を出力する。
+また、**`kide submit`や`kide tester`で提出する場合に、提出する直前にも整形が行われる**。
+
+KIDEと実行コマンドとの間では標準入力と標準出力でソースコードをやり取りする。
+標準入力から読み取ったソースコードを整形し、標準出力に出力するプログラムを作成し、実行コマンドとして登録することで、ソースコードを整形することが出来る。
+
+また、コマンドの文字列の中の`{EXE_DIR}`はKIDEの実行ファイルのあるディレクトリのパスに置き換えられる。
 
 
 ### `snippet`
@@ -163,3 +178,60 @@ KIDEをダウンロードコンパイルしてあり、`KIDE`という実行フ�
     - 保存を有効にするとこれ以降ACしたときに自動的に指定したディレクトリに保存される。
     - このとき、問題URL・提出URL・提出日時・ステータス（Accepted）がソースコードの先頭にコメントアウトされて追加されたものが保存される。
 11. あとは精進するだけ！
+
+
+## `settings.json`の例
+```json
+{
+  "General": {
+    "SaveSourceFileAfterAccepted": true,
+    "SaveSourceFileDirectory": "{EXE_DIR}/ac_sources",
+    "SourcecodeProcess": {
+    	"Command": "{EXE_DIR}/cpp_process"
+    }
+  },
+  "Language": {
+    "C++": {
+      "CompileCommand": "g++ -std=c++14 -O0 -g -o a.out {SOURCEFILE_PATH}",
+      "RunningCommand": "./a.out"
+    },
+    "Java": {
+      "CompileCommand": "javac {SOURCEFILE_PATH}",
+      "RunningCommand": "java Main"
+    },
+    "Python": {
+      "CompileCommand": "",
+      "RunningCommand": "python {SOURCEFILE_PATH}"
+    },
+    "Python2": {
+      "CompileCommand": "",
+      "RunningCommand": "python {SOURCEFILE_PATH}"
+    },
+    "Python3": {
+      "CompileCommand": "",
+      "RunningCommand": "python {SOURCEFILE_PATH}"
+    }
+  },
+  "OnlineJudge": {
+    "AOJ": {
+      "Handle": "aoj_handle",
+      "Password": "********"
+    },
+    "AtCoder": {
+      "Handle": "atcoder_handle",
+      "Password": "********"
+    },
+    "Codeforces": {
+      "Handle": "codeforces_handle",
+      "Password": "********"
+    },
+    "yukicoder": {
+      "Handle": "yukicoder_handle",
+      "Password": "********"
+    }
+  },
+  "snippet_manager": {
+    "root_dir": "/home/ユーザ名/competitive_programming/libraries(snippets)"
+  }
+}
+```

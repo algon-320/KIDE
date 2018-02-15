@@ -1,11 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/algon-320/KIDE/language"
@@ -225,73 +226,24 @@ func saveSourceFile(sourceFilename string, sourceCode []byte, p *online_judge.Pr
 }
 
 // ソースコードを整形する
+// 設定で実行コマンドが指定されていた場合に、標準入力にソースコードを投げ、標準出力から読み取ったものを返す
+// {EXE_DIR}を実行ファイルのあるディレクトリのパスとして使える
 func processSource(sourceCode string) string {
-	// 整形ツール(自分用) : TODO
-	mycpp := func(lines []string) string {
-		const (
-			SKIPBEGIN      = "//SKIPBEGIN"
-			SKIPEND        = "//SKIPEND"
-			PROBLEM_STRING = "KIDE_PROBLEM_"
-		)
+	var cmd *exec.Cmd
+	if tmp, exist := setting.Get("General.SourcecodeProcess.Command", ""); exist {
+		exeDir, _ := os.Executable()
+		exeDir = filepath.Dir(exeDir)
+		cmdStr := tmp.(string)
+		expanded := strings.Replace(cmdStr, "{EXE_DIR}", exeDir, 1)
+		cmd = util.Command(expanded)
 
-		ret := ""
-		state := 0
-		skip := false
-		problemID := ""
-		for i := 0; i < len(lines); i++ {
-			// SKIPBEGIN ~ SKIPEND の行を無視
-			if strings.TrimSpace(lines[i]) == SKIPBEGIN {
-				for strings.TrimSpace(lines[i]) != SKIPEND {
-					i++
-				}
-				continue
-			}
+		cmd.Stdin = bytes.NewBufferString(sourceCode)
+		cmd.Stderr = os.Stderr
+		var out bytes.Buffer
+		cmd.Stdout = &out
 
-			if len(lines[i]) >= 1 && lines[i][:1] == "#" {
-				// 問題を指定する行
-				re := regexp.MustCompile("#define " + PROBLEM_STRING + "(.*)")
-				group := re.FindSubmatch([]byte(lines[i]))
-				if group != nil {
-					problemID = string(group[1])
-					skip = true
-					ret += "\n"
-					continue
-
-				} else if len(lines[i]) >= 3 && lines[i][:3] == "#if" {
-					// #if / #ifdef / #ifndef の行
-					state++
-					re = regexp.MustCompile("#ifdef " + PROBLEM_STRING)
-					group = re.FindSubmatch([]byte(lines[i]))
-					if group != nil {
-						if lines[i] == ("#ifdef " + PROBLEM_STRING + problemID) {
-							skip = false
-						}
-						continue
-					}
-
-				} else if len(lines[i]) >= 6 && lines[i][:6] == "#endif" {
-					// #endif の行
-					if state == 0 {
-						fmt.Println(util.PrefixError + "Missing format (processSource)")
-						return ""
-					}
-
-					state--
-					if state == 0 {
-						skip = true
-						continue
-					}
-				}
-			}
-
-			if skip {
-				continue
-			}
-			ret += lines[i] + "\n"
-		}
-
-		return ret
+		cmd.Run()
+		return out.String()
 	}
-	lines := strings.Split(sourceCode, "\n")
-	return mycpp(lines)
+	return sourceCode
 }
