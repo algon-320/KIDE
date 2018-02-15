@@ -111,7 +111,7 @@ AtCoder、Codeforces、yukicoderの場合、コンテストの問題一覧ペー
 
 
 ### `kide processer`
-`settings.json`に`General->SourcecodeProcess->Commnad`で実行コマンドが設定されている場合にソースコードを整形することが出来る。設定しなければ、ソースコードがそのまま整形後のものとして扱われるため、意識する必要はない。
+`settings.json`に`General->SourcecodeProcess->Command`で実行コマンドが設定されている場合にソースコードを整形することが出来る。設定しなければ、ソースコードがそのまま整形後のものとして扱われるため、意識する必要はない。
 
 サブコマンド`kide processer`では、カレントディレクトリの対象ソースコードを整形し、その結果を出力する。
 また、**`kide submit`や`kide tester`で提出する場合に、提出する直前にも整形が行われる**。
