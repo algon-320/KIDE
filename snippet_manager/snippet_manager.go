@@ -56,7 +56,7 @@ func load() {
 		rootSnippetsDir = tmp.(string)
 	} else {
 		for {
-			tmp := util.AskString("スニペットファイルのある親ディレクトリを入力してください(絶対パス)")
+			tmp := util.AskString("Disignate *full path* of the directory where snippet files are.")
 			if util.FileExists(tmp) {
 				rootSnippetsDir = tmp
 				setting.Set(settingRootDir, rootSnippetsDir)
