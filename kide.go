@@ -144,7 +144,7 @@ func cmdSnippetManager(c *cli.Context) error {
 	for _, e := range snippet_manager.EditorList {
 		editorList = append(editorList, e.Name())
 	}
-	i := util.AskChoose(editorList, "どのエディタ向けのスニペットを生成しますか")
+	i := util.AskChoose(editorList, "Select format you want to print with")
 	if i == 0 {
 		md := snippet_manager.GenerateMarkdown()
 		fmt.Println(md)
