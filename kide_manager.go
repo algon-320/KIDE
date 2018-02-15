@@ -225,15 +225,24 @@ func saveSourceFile(sourceFilename string, sourceCode []byte, p *online_judge.Pr
 	return nil
 }
 
-// ソースコードを整形する (設定で実行コマンドが指定されていた場合に整形する)
+// ソースコードを整形する
+// 設定で実行コマンドが指定されていた場合に、標準入力にソースコードを投げ、標準出力から読み取ったものを返す
+// {EXE_DIR}を実行ファイルのあるディレクトリのパスとして使える
 func processSource(sourceCode string) string {
 	var cmd *exec.Cmd
 	if tmp, exist := setting.Get("General.SourcecodeProcess.Command", ""); exist {
-		cmd = util.Command(tmp.(string))
+		exeDir, _ := os.Executable()
+		exeDir = filepath.Dir(exeDir)
+		cmdStr := tmp.(string)
+		expanded := strings.Replace(cmdStr, "{EXE_DIR}", exeDir, 1)
+		cmd = util.Command(expanded)
+
 		cmd.Stdin = bytes.NewBufferString(sourceCode)
 		cmd.Stderr = os.Stderr
 		var out bytes.Buffer
 		cmd.Stdout = &out
+
+		cmd.Run()
 		return out.String()
 	}
 	return sourceCode
