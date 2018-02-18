@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/algon-320/KIDE/setting"
 	"github.com/algon-320/KIDE/util"
 )
 
@@ -19,22 +20,34 @@ type Language interface {
 	UnComment(line string) string
 }
 
-var languageList = []Language{
-	CPP,
-	PYTHON2,
-	PYTHON3,
-	JAVA,
+var languageList = []*Language{
+	&CPP,
+	&PYTHON2,
+	&PYTHON3,
+	&JAVA,
 }
 
 // GetLanguage ... 言語名からLanguageを返す(仮) TODO
 func GetLanguage(name string) Language {
-	for _, lang := range languageList {
-		if name == lang.Name() {
-			return lang
+	for i, lang := range languageList {
+		if lang == nil {
+			fmt.Println(len(languageList))
+			panic(fmt.Errorf("%d: lang is nil", i))
+		}
+		if name == (*lang).Name() {
+			return *lang
 		}
 	}
 	fmt.Fprintln(os.Stderr, util.PrefixCaution+"unsupported language.")
-	return CPP // TODO: settingから読むべき
+
+	if len(languageList) == 0 {
+		panic(fmt.Errorf("LanguageList is empty"))
+	}
+	defaultLangName := (*languageList[0]).Name()
+	if tmp, exist := setting.Get("Language.DefaultLanguageName", ""); exist {
+		defaultLangName = tmp.(string)
+	}
+	return GetLanguage(defaultLangName)
 }
 
 // FindSourceCode ... 実行する対象のソースコードを決めて、ファイル名を返す(複数ある場合はユーザに問う)

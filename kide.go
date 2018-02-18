@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 
+	"github.com/algon-320/KIDE/setting"
 	"github.com/algon-320/KIDE/snippet_manager"
 
 	"github.com/algon-320/KIDE/language"
@@ -168,6 +169,11 @@ func main() {
 	app.Name = "KIDE"
 	app.Usage = "Kyopro-Iikanjini-Dekiru-Environment"
 
+	var defaultLangName string
+	if tmp, exist := setting.Get("Language.DefaultLanguageName", ""); exist {
+		defaultLangName = tmp.(string)
+	}
+
 	app.Commands = []cli.Command{
 		{
 			Name:    "run",
@@ -177,7 +183,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
-					Value: "C++",
+					Value: defaultLangName,
 					Usage: "designate language name",
 				},
 			},
@@ -190,7 +196,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
-					Value: "C++",
+					Value: defaultLangName,
 					Usage: "designate language name",
 				},
 				cli.IntFlag{
@@ -214,7 +220,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
-					Value: "C++",
+					Value: defaultLangName,
 					Usage: "designate language name",
 				},
 			},
@@ -233,7 +239,7 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
-					Value: "C++",
+					Value: defaultLangName,
 					Usage: "designate language name",
 				},
 			},

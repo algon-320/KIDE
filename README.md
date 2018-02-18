@@ -35,6 +35,7 @@ $ go build
 | Python3 | "Python3" | ".py" | 無し | `python {SOURCEFILE_PATH}` |
 
 コンパイルコマンド・実行コマンドは`settings.json`で変更できる。
+デフォルト言語も`setting.json`の`Language`->`DefaultLanguageName`で指定できる。
 
 言語は比較的容易に追加できる。詳しくは`language/ADD_NEW_LANGUAGE.md`を参照。
 
@@ -74,7 +75,7 @@ $ go build
 オプション
 - `--language`、`-l`: コンパイル・実行したいソースコードの言語名を指定する(仕様の項目を参照)
     - 使える言語は language/language.go の`languageList`にあるもの
-    - デフォルトはC++
+    - デフォルトは`setting.json`の`Language`->`DefaultLanguageName`で指定可能
 
 
 ### `dl {URL}`
@@ -191,6 +192,7 @@ KIDEをダウンロードコンパイルしてあり、`KIDE`という実行フ�
     }
   },
   "Language": {
+    "DefaultLanguageName": "C++",
     "C++": {
       "CompileCommand": "g++ -std=c++14 -O0 -g -o a.out {SOURCEFILE_PATH}",
       "RunningCommand": "./a.out"
