@@ -19,18 +19,18 @@ type Language interface {
 	UnComment(line string) string
 }
 
-var languageList = []*Language{
-	&CPP,
-	&PYTHON2,
-	&PYTHON3,
-	&JAVA,
+var languageList = []Language{
+	CPP,
+	PYTHON2,
+	PYTHON3,
+	JAVA,
 }
 
 // GetLanguage ... 言語名からLanguageを返す(仮) TODO
 func GetLanguage(name string) Language {
 	for _, lang := range languageList {
-		if name == (*lang).Name() {
-			return *lang
+		if name == lang.Name() {
+			return lang
 		}
 	}
 	fmt.Fprintln(os.Stderr, util.PrefixCaution+"unsupported language.")
