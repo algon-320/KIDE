@@ -68,7 +68,7 @@ func (cf *codeforces) loadAccount() (string, string) {
 
 func (cf *codeforces) login() (*browser.Browser, error) {
 	handle, password := cf.loadAccount()
-	data := map[string]string{"handle": handle, "password": password}
+	data := map[string]string{"handleOrEmail": handle, "password": password}
 
 	br := surf.NewBrowser()
 

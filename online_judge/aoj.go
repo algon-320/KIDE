@@ -1,6 +1,8 @@
 package online_judge
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"html"
 	"io/ioutil"
@@ -15,6 +17,8 @@ import (
 	"github.com/algon-320/KIDE/language"
 	"github.com/algon-320/KIDE/setting"
 	"github.com/algon-320/KIDE/util"
+	"github.com/headzoo/surf"
+	"github.com/headzoo/surf/browser"
 )
 
 type aoj struct {
@@ -28,7 +32,7 @@ type aoj struct {
 var AOJ = &aoj{
 	name:        "Aizu Online Judge",
 	url:         "http://judge.u-aizu.ac.jp/onlinejudge/index.jsp",
-	loginURL:    "http://judge.u-aizu.ac.jp/onlinejudge/index.jsp",
+	loginURL:    "http://judge.u-aizu.ac.jp/onlinejudge/signin.jsp",
 	sessionFile: "session_aoj.dat",
 }
 
@@ -67,6 +71,65 @@ func (a *aoj) loadAccount() (string, string) {
 	return handle, password
 }
 
+func (a *aoj) login() (*browser.Browser, error) {
+	handle, password := a.loadAccount()
+	data := map[string]string{"userID": handle, "password": password}
+
+	br := surf.NewBrowser()
+
+	cjar := util.LoadLoginSession(a.sessionFile, a.url)
+	if cjar != nil {
+		br.SetCookieJar(cjar)
+		if a.checkLoggedin(br) {
+			fmt.Fprintln(os.Stderr, util.PrefixInfo+"Loaded session of AOJ.")
+			return br, nil
+		}
+	}
+
+	// 新たにログイン
+	fmt.Fprintln(os.Stderr, util.PrefixInfo+"login to AOJ ...")
+
+	type Payload struct {
+		UserID   string `json:"id"`
+		Password string `json:"password"`
+	}
+	payload := Payload{
+		UserID:   data["userID"],
+		Password: data["password"],
+	}
+	bytes, _ := json.Marshal(&payload)
+
+	req, err := http.NewRequest("POST", "https://judgeapi.u-aizu.ac.jp/session", strings.NewReader(string(bytes)))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/JSON")
+
+	client := &http.Client{Jar: br.CookieJar()}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if a.checkLoggedin(br) {
+		cookieURL, _ := url.Parse("judge.u-aizu.ac.jp")
+		cookies := br.CookieJar().Cookies(cookieURL)
+		util.SaveLoginSession(a.sessionFile, cookies)
+		return br, nil
+	}
+
+	return nil, &ErrFailedToLogin{oj_name: a.Name(), message: "Failed to login."}
+}
+
+func (a *aoj) checkLoggedin(br *browser.Browser) bool {
+	br.Open("https://judgeapi.u-aizu.ac.jp/self")
+	if br.StatusCode() != 200 {
+		return false
+	}
+	return true
+}
+
 func (a *aoj) extractIDs(submitURL string) (string, string) {
 	urlObj, _ := url.Parse(submitURL)
 	fragment := urlObj.Fragment
@@ -102,62 +165,78 @@ func (a *aoj) Submit(p *Problem, sourceCode string, lang language.Language) (*Ju
 	submitURL = "http://judge.u-aizu.ac.jp/onlinejudge/" + submitURL
 
 	lessonID, problemID := a.extractIDs(submitURL)
-	postURL := "http://judge.u-aizu.ac.jp/onlinejudge/webservice/submit"
+	postURL := "https://judgeapi.u-aizu.ac.jp/submissions"
 
-	handle, password := a.loadAccount()
+	problemPath := problemID
+	if len(lessonID) > 0 {
+		problemPath = lessonID + "_" + problemID
+	}
 
-	values := url.Values{}
-	values.Set("userID", handle)
-	values.Add("password", password)
-	values.Add("problemNO", problemID)
-	values.Add("lessonID", lessonID)
-	values.Add("language", langID)
-	values.Add("sourceCode", sourceCode)
+	type Payload struct {
+		ProblemID  string `json:"problemId"`
+		Language   string `json:"language"`
+		SourceCode string `json:"sourceCode"`
+	}
+	payload := Payload{
+		ProblemID:  problemPath,
+		Language:   langID,
+		SourceCode: sourceCode,
+	}
+	bytes, _ := json.Marshal(&payload)
 
-	req, err := http.NewRequest("POST", postURL, strings.NewReader(values.Encode()))
+	br, err := a.login()
 	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	client := &http.Client{}
-	resp, err2 := client.Do(req)
-	if err2 != nil {
-		return nil, err2
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return nil, &ErrFailedToSubmit{message: "response status :" + fmt.Sprint(resp.StatusCode)}
+		return nil, &ErrFailedToSubmit{message: err.(*ErrFailedToLogin).message}
 	}
 
-	bbody, _ := ioutil.ReadAll(resp.Body)
-	sbody := string(bbody)
-	// 成功した時は"0\n"が返る
-	if sbody != "0\n" {
-		return nil, &ErrFailedToSubmit{message: "Incorrect Handle or Password."}
-	}
-
-	allResultsURL := "http://judge.u-aizu.ac.jp/onlinejudge/status.jsp"
-	doc, err = goquery.NewDocument(allResultsURL)
-	if err != nil {
-		return nil, err
-	}
-
-	submissionID := ""
-	doc.Find("#tableRanking").Find("tr:nth-of-type(n + 2)").EachWithBreak(func(_ int, s *goquery.Selection) bool {
-		if s.Find("td:nth-of-type(2) > a").Text() == handle {
-			submissionID = s.Find("td:nth-of-type(1) > a").Text()
-			return false
+	// submit
+	{
+		req, err := http.NewRequest("POST", postURL, strings.NewReader(string(bytes)))
+		if err != nil {
+			return nil, err
 		}
-		return true
-	})
+		req.Header.Set("Content-Type", "application/JSON")
+		client := &http.Client{Jar: br.CookieJar()}
+		resp, err := client.Do(req)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
 
-	if submissionID == "" {
-		return nil, &ErrFailedToSubmit{message: "no judge result"}
+		if resp.StatusCode != 200 {
+			return nil, &ErrFailedToSubmit{message: "response status :" + fmt.Sprint(resp.StatusCode)}
+		}
 	}
 
-	time.Sleep(time.Second) // 一秒間待つ
+	result := struct {
+		Status []struct {
+			RunID          string `xml:"run_id"`
+			UserID         string `xml:"user_id"`
+			ProblemID      string `xml:"problem_id"`
+			SubmissionDate string `xml:"submission_date"`
+			Status         string `xml:"status"`
+			Language       string `xml:"language"`
+			Cputime        string `xml:"cputime"`
+			Memory         string `xml:"memory"`
+			CodeSize       string `xml:"code_size"`
+		} `xml:"status"`
+	}{}
+	handle, _ := a.loadAccount()
+	// 結果を取る
+	{
+		time.Sleep(1 * time.Second)
+		resp, err := http.Get("http://judge.u-aizu.ac.jp/onlinejudge/webservice/status_log?user_id=" + handle + "&limit=1")
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+		xmldata, _ := ioutil.ReadAll(resp.Body)
+		if err := xml.Unmarshal(xmldata, &result); err != nil {
+			return nil, err
+		}
+	}
 
+	submissionID := strings.Trim(result.Status[0].RunID, "\n")
 	resultURL := "http://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=" + submissionID
 	var judgeRes JudgeResult
 	judgeRes.Date = time.Now()
@@ -169,51 +248,34 @@ func (a *aoj) Submit(p *Problem, sourceCode string, lang language.Language) (*Ju
 
 	waiting := true
 	watingCnt := 0
-	for waiting {
-		doc, err = goquery.NewDocument(resultURL)
-		if err != nil {
-			return nil, err
+	for {
+		status := strings.Trim(result.Status[0].Status, "\n")
+		if strings.HasSuffix(status, "Accepted") {
+			judgeRes.Status = JudgeStatusAC
+			waiting = false
+		} else if strings.HasSuffix(status, "Wrong Answer") {
+			judgeRes.Status = JudgeStatusWA
+			waiting = false
+		} else if strings.HasSuffix(status, "Compile Error") {
+			judgeRes.Status = JudgeStatusCE
+			waiting = false
+		} else if strings.HasSuffix(status, "Runtime Error") {
+			judgeRes.Status = JudgeStatusRE
+			waiting = false
+		} else if strings.HasSuffix(status, "Time Limit Exceeded") {
+			judgeRes.Status = JudgeStatusTLE
+			waiting = false
+		} else if strings.HasSuffix(status, "Memory Limit Exceeded") {
+			judgeRes.Status = JudgeStatusMLE
+			waiting = false
+		} else if strings.HasSuffix(status, "Output Limit Exceeded") {
+			judgeRes.Status = JudgeStatusOLE
+			waiting = false
+		} else if strings.HasSuffix(status, "-") {
+			judgeRes.Status = JudgeStatusUNK
 		}
 
-		doc.Find("table:nth-of-type(3)").Find("tr:nth-of-type(n + 2)").EachWithBreak(func(_ int, s *goquery.Selection) bool {
-			status := s.Find("td:nth-of-type(2)").Text()
-			status = strings.TrimRight(status, "\n")
-
-			if strings.HasSuffix(status, "Accepted") {
-				judgeRes.Status = JudgeStatusAC
-				return true
-			} else if strings.HasSuffix(status, "Wrong Answer") {
-				judgeRes.Status = JudgeStatusWA
-				waiting = false
-				return false
-			} else if strings.HasSuffix(status, "Compile Error") {
-				judgeRes.Status = JudgeStatusCE
-				waiting = false
-				return false
-			} else if strings.HasSuffix(status, "Runtime Error") {
-				judgeRes.Status = JudgeStatusRE
-				waiting = false
-				return false
-			} else if strings.HasSuffix(status, "Time Limit Exceeded") {
-				judgeRes.Status = JudgeStatusTLE
-				waiting = false
-				return false
-			} else if strings.HasSuffix(status, "Memory Limit Exceeded") {
-				judgeRes.Status = JudgeStatusMLE
-				waiting = false
-				return false
-			} else if strings.HasSuffix(status, "Output Limit Exceeded") {
-				judgeRes.Status = JudgeStatusOLE
-				waiting = false
-				return false
-			} else if strings.HasSuffix(status, "-") {
-				judgeRes.Status = JudgeStatusUNK
-				return false
-			}
-			return true
-		})
-
-		if judgeRes.Status == JudgeStatusAC {
+		if !waiting {
 			break
 		}
 
