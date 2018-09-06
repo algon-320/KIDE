@@ -141,7 +141,7 @@ func cmdAtCoderConv(c *cli.Context) error {
 	return nil
 }
 
-func cmdCodeforcesMySubmissionViewer(c *cli.Context) error {
+func cmdCodeforcesMySubmissionsViewer(c *cli.Context) error {
 	if c.NArg() < 1 {
 		return cli.NewExitError(util.PrefixError+"few args", 1)
 	}
@@ -190,83 +190,84 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
-			Name:    "run",
-			Aliases: []string{"r"},
-			Usage:   "run the source-code here",
-			Action:  cmdRun,
+			Name:      "run",
+			Aliases:   []string{"r"},
+			Usage:     "Runs the source code here",
+			UsageText: "run [command options]",
+			Action:    cmdRun,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
 					Value: defaultLangName,
-					Usage: "designate language name",
+					Usage: "runnig as `LANGUAGE`",
 				},
 			},
 		},
 		{
-			Name:    "tester",
-			Aliases: []string{"t"},
-			Usage:   "test samplecases",
-			Action:  cmdTester,
+			Name:      "tester",
+			Aliases:   []string{"t"},
+			Usage:     "Tests samplecases",
+			UsageText: "tester [problem id] [command options]",
+			Action:    cmdTester,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
 					Value: defaultLangName,
-					Usage: "designate language name",
+					Usage: "testing in `LANGUAGE`",
 				},
 				cli.IntFlag{
 					Name:  "case, c",
 					Value: -1,
-					Usage: "designate samplecase (1-indexed value) testing",
+					Usage: "testing only one case. `INDEX` is index of samples (1-indexed value)",
 				},
 			},
 		},
 		{
-			Name:    "dl",
-			Aliases: []string{"d"},
-			Usage:   "download samplecases",
-			Action:  cmdDl,
+			Name:      "dl",
+			Aliases:   []string{"d"},
+			Usage:     "Downloads samplecases of the problem",
+			UsageText: "dl [problem page url]",
+			Action:    cmdDl,
 		},
 		{
-			Name:    "submit",
-			Aliases: []string{"s"},
-			Usage:   "submit solution",
-			Action:  cmdSubmit,
+			Name:      "submit",
+			Aliases:   []string{"s"},
+			Usage:     "Submits the solution",
+			UsageText: "submit [problem id] [command options]",
+			Action:    cmdSubmit,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
 					Value: defaultLangName,
-					Usage: "designate language name",
+					Usage: "submit as `LANGUAGE`",
 				},
 			},
 		},
 		{
 			Name:    "view",
 			Aliases: []string{"v"},
-			Usage:   "view problems",
+			Usage:   "Shows problems",
 			Action:  cmdView,
 		},
 		{
-			Name:    "processer",
-			Aliases: []string{"p"},
-			Usage:   "proccess source code and output",
-			Action:  cmdProcesser,
+			Name:      "processer",
+			Aliases:   []string{"p"},
+			Usage:     "Processes source code and output",
+			UsageText: "processer [command options]",
+			Action:    cmdProcesser,
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "language, l",
 					Value: defaultLangName,
-					Usage: "designate language name",
+					Usage: "processing as `LANGUAGE`",
 				},
 			},
 		},
 		{
-			Name:   "atcoderconv",
-			Usage:  "convert old atcoder url to beta url",
-			Action: cmdAtCoderConv,
-		},
-		{
-			Name:   "cf-mysubmssions",
-			Usage:  "cf-mysubmssions [contestID]",
-			Action: cmdCodeforcesMySubmissionViewer,
+			Name:      "cf-mysubmissions",
+			Usage:     "Shows mysubmissions of codeforces contest",
+			UsageText: "cf-mysubmissions [contest id]",
+			Action:    cmdCodeforcesMySubmissionsViewer,
 		},
 		{
 			Name:   "snippet",

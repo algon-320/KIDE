@@ -123,7 +123,7 @@ KIDEと実行コマンドとの間では標準入力と標準出力でソース�
 ### `cf-mysubmissions {コンテストid}`
 Codeforcesのコンテストidを指定し、そのコンテストにおける自分の提出のジャッジ結果を表示する。
 
-「In Queue」の提出が存在する場合、30秒毎に確認し、ジャッジ結果が更新されていた場合その結果を表示する。
+「In Queue」の提出が存在する場合、1分毎に確認し、ジャッジ結果が更新されていた場合その結果を表示する。
 
 
 ### `snippet`
@@ -189,10 +189,7 @@ KIDEをダウンロードコンパイルしてあり、`KIDE`という実行フ�
 {
   "General": {
     "SaveSourceFileAfterAccepted": true,
-    "SaveSourceFileDirectory": "{EXE_DIR}/ac_sources",
-    "SourcecodeProcess": {
-    	"Command": "{EXE_DIR}/cpp_process"
-    }
+    "SaveSourceFileDirectory": "{EXE_DIR}/ac_sources"
   },
   "Language": {
     "DefaultLanguageName": "C++",

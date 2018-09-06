@@ -443,7 +443,7 @@ func (cf *codeforces) ShowMySubmissions(contestID int) {
 		fmt.Print(util.ESCS_COL_REVERSE + "waiting for judge (" + strconv.Itoa(waitingTotal-currentWaitingCount) + "/" + strconv.Itoa(waitingTotal) + ")" + util.ESCS_COL_OFF)
 		messagePrinted = true
 
-		time.Sleep(1 * time.Minute) // 30秒ごとに確認
+		time.Sleep(1 * time.Minute) // 1分ごとに確認
 	}
 	clearLine()
 }
