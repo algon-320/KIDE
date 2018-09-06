@@ -5,6 +5,8 @@ import (
 	"html"
 	"os"
 	"regexp"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -317,4 +319,123 @@ func (cf *codeforces) IsValidURL(url string) (bool, bool) {
 
 func (cf *codeforces) MarshalJSON() ([]byte, error) {
 	return []byte(`"` + cf.Name() + `"`), nil
+}
+
+func (cf *codeforces) ShowMySubmissions(contestID int) {
+	br, err := cf.login()
+	if err != nil {
+		return
+	}
+
+	mysubmissionsURL := cf.url + fmt.Sprintf("contest/%d/my", contestID)
+	if err := br.Open(mysubmissionsURL); err != nil {
+		return
+	}
+
+	judgeFinished := make(map[int]struct{})
+	waitingTotal := -1
+
+	messagePrinted := false
+	clearLine := func() {
+		if messagePrinted {
+			// waiting for judge の行を消して、カーソル位置を戻す
+			util.ClearCurrentLine()
+			util.RestoreCursorPos()
+			messagePrinted = false
+		}
+	}
+
+	for {
+		br.Open(mysubmissionsURL)
+		trs := br.Dom().Find(".status-frame-datatable").Find("tr")
+
+		submissionIDs := []int{}
+		statuses := map[int]JudgeStatus{}
+		problems := map[int]string{}
+		results := map[int]string{}
+
+		currentWaitingCount := 0
+		trs.Each(func(i int, tr *goquery.Selection) {
+			if cl, ok := tr.Attr("class"); ok && cl == "first-row" {
+				return
+			}
+
+			var submissionID int
+			if tmp, ok := tr.Attr("data-submission-id"); ok {
+				submissionID, _ = strconv.Atoi(tmp)
+			} else {
+				return
+			}
+			problems[submissionID] = strings.TrimSpace(tr.Find("td:nth-of-type(4)").Text())
+
+			isWaiting, _ := tr.Find("td.status-verdict-cell").First().Attr("waiting")
+			if isWaiting == "true" {
+				currentWaitingCount++
+				statuses[submissionID] = JudgeStatusUNK
+				return
+			}
+
+			submissionIDs = append(submissionIDs, submissionID)
+
+			var status JudgeStatus
+			span := tr.Find("span.submissionVerdictWrapper").First()
+			result := strings.TrimSpace(span.Text())
+			switch {
+			case strings.HasPrefix(result, "Accepted"):
+				status = JudgeStatusAC
+			case strings.HasPrefix(result, "Pretests passed"):
+				status = JudgeStatusPP
+			case strings.HasPrefix(result, "Wrong answer"):
+				status = JudgeStatusWA
+			case strings.HasPrefix(result, "Compilation error"):
+				status = JudgeStatusCE
+			case strings.HasPrefix(result, "Runtime error"):
+				status = JudgeStatusRE
+			case strings.HasPrefix(result, "Time limit exceeded"):
+				status = JudgeStatusTLE
+			case strings.HasPrefix(result, "Memory limit exceeded"):
+				status = JudgeStatusMLE
+			default:
+				status = JudgeStatusUNK
+			}
+			statuses[submissionID] = status
+			results[submissionID] = result
+		})
+
+		sort.Slice(submissionIDs, func(i, j int) bool { return submissionIDs[i] < submissionIDs[j] })
+
+		for _, k := range submissionIDs {
+			v := statuses[k]
+
+			// ジャッジ待ちのものはスキップ
+			if _, ok := statuses[k]; !ok {
+				continue
+			}
+
+			if _, ok := judgeFinished[k]; !ok {
+				clearLine()
+				fmt.Println("url: " + cf.url + fmt.Sprintf("contest/%d/submission/%d", contestID, k))
+				fmt.Println("\tproblem: " + problems[k])
+				fmt.Println("\tverdict: " + v.GetColorESCS() + results[k] + util.ESCS_COL_OFF)
+				fmt.Println()
+				judgeFinished[k] = struct{}{} // ジャッジ済み
+			}
+		}
+
+		if currentWaitingCount == 0 {
+			break
+		}
+
+		if waitingTotal == -1 {
+			waitingTotal = currentWaitingCount
+		}
+
+		clearLine()
+		util.SaveCursorPos() // カーソル位置を保存
+		fmt.Print(util.ESCS_COL_REVERSE + "waiting for judge (" + strconv.Itoa(waitingTotal-currentWaitingCount) + "/" + strconv.Itoa(waitingTotal) + ")" + util.ESCS_COL_OFF)
+		messagePrinted = true
+
+		time.Sleep(1 * time.Minute) // 30秒ごとに確認
+	}
+	clearLine()
 }

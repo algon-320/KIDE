@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"regexp"
+	"strconv"
 
 	"github.com/algon-320/KIDE/setting"
 	"github.com/algon-320/KIDE/snippet_manager"
@@ -140,6 +141,19 @@ func cmdAtCoderConv(c *cli.Context) error {
 	return nil
 }
 
+func cmdCodeforcesMySubmissionViewer(c *cli.Context) error {
+	if c.NArg() < 1 {
+		return cli.NewExitError(util.PrefixError+"few args", 1)
+	}
+
+	contestID, err := strconv.Atoi(c.Args().First())
+	if err != nil {
+		return cli.NewExitError(util.PrefixError+"designate contest id like\"1038\"", 1)
+	}
+	online_judge.Codeforces.ShowMySubmissions(contestID)
+	return nil
+}
+
 func cmdSnippetManager(c *cli.Context) error {
 	var editorList = []string{"markdown (library output)"}
 	for _, e := range snippet_manager.EditorList {
@@ -248,6 +262,11 @@ func main() {
 			Name:   "atcoderconv",
 			Usage:  "convert old atcoder url to beta url",
 			Action: cmdAtCoderConv,
+		},
+		{
+			Name:   "cf-mysubmssions",
+			Usage:  "cf-mysubmssions [contestID]",
+			Action: cmdCodeforcesMySubmissionViewer,
 		},
 		{
 			Name:   "snippet",

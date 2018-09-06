@@ -36,60 +36,48 @@ const (
 
 // ToString ... ジャッジ結果を文字列化します
 func (js JudgeStatus) ToString() string {
-	switch js {
-	case JudgeStatusAC:
-		return "Accepted"
-	case JudgeStatusPP:
-		return "Pretest passed"
-	case JudgeStatusWA:
-		return "Wrong answer"
-	case JudgeStatusCE:
-		return "Compilation error"
-	case JudgeStatusRE:
-		return "Runtime error"
-	case JudgeStatusTLE:
-		return "Time limit exceeded"
-	case JudgeStatusMLE:
-		return "Memory limit exceeded"
-	case JudgeStatusOLE:
-		return "Output limit exceeded"
-	case JudgeStatusIE:
-		return "Internal error"
-
-	case JudgeStatusUNK:
-		fallthrough
-	default:
-		return util.PrefixCaution + "Unknown"
+	labelMap := map[JudgeStatus]string{
+		JudgeStatusAC:  "Accepted",
+		JudgeStatusPP:  "Pretest passed",
+		JudgeStatusWA:  "Wrong answer",
+		JudgeStatusCE:  "Compilation error",
+		JudgeStatusRE:  "Runtime error",
+		JudgeStatusTLE: "Time limit exceeded",
+		JudgeStatusMLE: "Memory limit exceeded",
+		JudgeStatusOLE: "Output limit exceeded",
+		JudgeStatusIE:  "Internal error",
+		JudgeStatusUNK: "Unknown",
 	}
+	label, ok := labelMap[js]
+	if !ok {
+		return "Unknown"
+	}
+	return label
+}
+
+// GetColorESCS ... ジャッジ結果に対応する色のエスケープシーケンスを返す
+func (js JudgeStatus) GetColorESCS() string {
+	colorMap := map[JudgeStatus]string{
+		JudgeStatusAC:  util.ESCS_COL_GREEN_B,
+		JudgeStatusPP:  util.ESCS_COL_GREEN_B,
+		JudgeStatusWA:  util.ESCS_COL_RED_B,
+		JudgeStatusCE:  util.ESCS_COL_PURPLE_B,
+		JudgeStatusRE:  util.ESCS_COL_YELLOW_B,
+		JudgeStatusTLE: util.ESCS_COL_YELLOW_B,
+		JudgeStatusMLE: util.ESCS_COL_YELLOW_B,
+		JudgeStatusOLE: util.ESCS_COL_YELLOW_B,
+		JudgeStatusIE:  util.ESCS_COL_PURPLE_B,
+	}
+	col, ok := colorMap[js]
+	if !ok {
+		return util.ESCS_COL_PURPLE_B
+	}
+	return col
 }
 
 // String ... エスケープシーケンス付きで文字列化(出力用)
 func (js JudgeStatus) String() string {
-	switch js {
-	case JudgeStatusAC:
-		return util.ESCS_COL_GREEN_B + js.ToString() + util.ESCS_COL_OFF
-	case JudgeStatusPP:
-		return util.ESCS_COL_GREEN_B + "Pretest passed" + util.ESCS_COL_OFF
-	case JudgeStatusWA:
-		return util.ESCS_COL_RED_B + "Wrong answer" + util.ESCS_COL_OFF
-	case JudgeStatusCE:
-		return util.ESCS_COL_PURPLE_B + "Compilation error" + util.ESCS_COL_OFF
-	case JudgeStatusRE:
-		return util.ESCS_COL_YELLOW_B + "Runtime error" + util.ESCS_COL_OFF
-	case JudgeStatusTLE:
-		return util.ESCS_COL_YELLOW_B + "Time limit exceeded" + util.ESCS_COL_OFF
-	case JudgeStatusMLE:
-		return util.ESCS_COL_YELLOW_B + "Memory limit exceeded" + util.ESCS_COL_OFF
-	case JudgeStatusOLE:
-		return util.ESCS_COL_YELLOW_B + "Output limit exceeded" + util.ESCS_COL_OFF
-	case JudgeStatusIE:
-		return util.ESCS_COL_PURPLE_B + "Internal error" + util.ESCS_COL_OFF
-
-	case JudgeStatusUNK:
-		fallthrough
-	default:
-		return "\033[31;1;7m" + util.PrefixCaution + "Unknown" + util.ESCS_COL_OFF
-	}
+	return js.GetColorESCS() + js.ToString() + util.ESCS_COL_OFF
 }
 
 // CheckInterval ... ジャッジ結果を確認する間隔

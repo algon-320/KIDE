@@ -12,6 +12,7 @@ const (
 	ESCS_COL_YELLOW_B = "\033[33;1m"
 	ESCS_COL_CYAN_B   = "\033[34;1m"
 	ESCS_COL_PURPLE_B = "\033[35;1m"
+	ESCS_COL_REVERSE  = "\033[7m"
 	ESCS_BOLD         = "\033[1m"
 	ESCS_COL_OFF      = "\033[0m"
 
@@ -110,4 +111,19 @@ func PrintTitle(width int, prefixWidth int, ornament string, text string) {
 // PrintTitlef ... PrintTitleのフォーマット文字列版
 func PrintTitlef(width int, prefixWidth int, ornament string, ftext string, args ...interface{}) {
 	fmt.Print(SprintTitlef(width, prefixWidth, ornament, ftext, args...))
+}
+
+// SaveCursorPos ... カーソル位置を保存
+func SaveCursorPos() {
+	fmt.Print("\0337")
+}
+
+// RestoreCursorPos ... カーソル位置を復元
+func RestoreCursorPos() {
+	fmt.Print("\0338")
+}
+
+// ClearCurrentLine ... カーソルのある行をクリアする
+func ClearCurrentLine() {
+	fmt.Print("\033[2K")
 }
