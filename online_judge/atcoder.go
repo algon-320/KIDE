@@ -229,13 +229,17 @@ waiting:
 			break waiting
 		}
 
-		if watingCnt == 0 {
-			fmt.Fprint(os.Stderr, util.PrefixInfo+"waiting for judge .")
-		} else {
-			fmt.Fprint(os.Stderr, ".")
+		util.SaveCursorPos()
+		{
+			fmt.Fprintln(os.Stderr, util.ESCS_COL_REVERSE+
+				"waiting for judge "+strings.Repeat(".", watingCnt)+
+				util.ESCS_COL_OFF)
+			watingCnt++
+			time.Sleep(CheckInterval)
+
+			util.ClearCurrentLine()
 		}
-		watingCnt++
-		time.Sleep(CheckInterval)
+		util.RestoreCursorPos()
 	}
 	fmt.Fprint(os.Stderr, "\n")
 

@@ -196,8 +196,16 @@ func (cf *codeforces) Submit(p *Problem, sourceCode string, lang language.Langua
 		if v == "false" {
 			break
 		}
-		fmt.Fprintln(os.Stderr, status)
-		time.Sleep(CheckInterval)
+
+		util.SaveCursorPos()
+		{
+			fmt.Fprintln(os.Stderr, util.ESCS_COL_REVERSE+status+util.ESCS_COL_OFF)
+
+			time.Sleep(CheckInterval)
+
+			util.ClearCurrentLine()
+		}
+		util.RestoreCursorPos()
 	}
 
 	switch {
