@@ -343,16 +343,6 @@ func (cf *codeforces) ShowMySubmissions(contestID int) {
 	judgeFinished := make(map[int]struct{})
 	waitingTotal := -1
 
-	messagePrinted := false
-	clearLine := func() {
-		if messagePrinted {
-			// waiting for judge の行を消して、カーソル位置を戻す
-			util.ClearCurrentLine()
-			util.RestoreCursorPos()
-			messagePrinted = false
-		}
-	}
-
 	for {
 		br.Open(mysubmissionsURL)
 		trs := br.Dom().Find(".status-frame-datatable").Find("tr")
@@ -421,7 +411,6 @@ func (cf *codeforces) ShowMySubmissions(contestID int) {
 			}
 
 			if _, ok := judgeFinished[k]; !ok {
-				clearLine()
 				fmt.Println("url: " + cf.url + fmt.Sprintf("contest/%d/submission/%d", contestID, k))
 				fmt.Println("\tproblem: " + problems[k])
 				fmt.Println("\tverdict: " + v.GetColorESCS() + results[k] + util.ESCS_COL_OFF)
@@ -438,12 +427,14 @@ func (cf *codeforces) ShowMySubmissions(contestID int) {
 			waitingTotal = currentWaitingCount
 		}
 
-		clearLine()
 		util.SaveCursorPos() // カーソル位置を保存
-		fmt.Print(util.ESCS_COL_REVERSE + "waiting for judge (" + strconv.Itoa(waitingTotal-currentWaitingCount) + "/" + strconv.Itoa(waitingTotal) + ")" + util.ESCS_COL_OFF)
-		messagePrinted = true
+		{
+			fmt.Print(util.ESCS_COL_REVERSE + "waiting for judge (" + strconv.Itoa(waitingTotal-currentWaitingCount) + "/" + strconv.Itoa(waitingTotal) + ")" + util.ESCS_COL_OFF)
 
-		time.Sleep(1 * time.Minute) // 1分ごとに確認
+			time.Sleep(1 * time.Minute) // 1分ごとに確認
+
+			util.ClearCurrentLine()
+		}
+		util.RestoreCursorPos()
 	}
-	clearLine()
 }
