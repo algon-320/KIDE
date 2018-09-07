@@ -15,7 +15,7 @@ func TestYukicoderLogin(t *testing.T) {
 	}
 	br.Open("https://yukicoder.me/problems/no/1/submit")
 	if br.Title() != "提出 - yukicoder" {
-		t.Error("yukicoderにログイン出来ていません！ : %s", br.Title())
+		t.Errorf("yukicoderにログイン出来ていません！ : %s", br.Title())
 		return
 	}
 }

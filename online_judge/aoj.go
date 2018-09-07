@@ -281,7 +281,7 @@ func (a *aoj) Submit(p *Problem, sourceCode string, lang language.Language) (*Ju
 
 		util.SaveCursorPos()
 		{
-			fmt.Fprintln(os.Stderr, util.ESCS_COL_REVERSE+
+			fmt.Fprint(os.Stderr, util.ESCS_COL_REVERSE+
 				"waiting for judge "+strings.Repeat(".", watingCnt)+
 				util.ESCS_COL_OFF)
 			watingCnt++

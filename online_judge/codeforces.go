@@ -199,7 +199,7 @@ func (cf *codeforces) Submit(p *Problem, sourceCode string, lang language.Langua
 
 		util.SaveCursorPos()
 		{
-			fmt.Fprintln(os.Stderr, util.ESCS_COL_REVERSE+status+util.ESCS_COL_OFF)
+			fmt.Fprint(os.Stderr, util.ESCS_COL_REVERSE+status+util.ESCS_COL_OFF)
 
 			time.Sleep(CheckInterval)
 
