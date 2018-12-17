@@ -26,8 +26,8 @@ type atcoder struct {
 // AtCoder ... オンラインジャッジ: AtCoder
 var AtCoder = &atcoder{
 	name:        "AtCoder",
-	url:         "https://beta.atcoder.jp/",
-	loginURL:    "https://beta.atcoder.jp/login",
+	url:         "https://atcoder.jp/",
+	loginURL:    "https://atcoder.jp/login",
 	sessionFile: "session_atcoder.dat",
 }
 
@@ -122,7 +122,7 @@ func (ac *atcoder) checkLoggedin(br *browser.Browser) bool {
 
 	// AGC001の提出ページにアクセスして開くことが出来ればログイン出来ている
 	// (ログインしていないとログインページに飛ばされる)
-	agc001URL := "https://beta.atcoder.jp/contests/agc001/submit"
+	agc001URL := "https://atcoder.jp/contests/agc001/submit"
 	br.Open(agc001URL)
 	return br.Url().String() == agc001URL
 }

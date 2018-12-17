@@ -28,8 +28,8 @@ type codeforces struct {
 // Codeforces ... オンラインジャッジ: Codeforces
 var Codeforces = &codeforces{
 	name:        "Codeforces",
-	url:         "http://codeforces.com/",
-	loginURL:    "http://codeforces.com/enter",
+	url:         "https://codeforces.com/",
+	loginURL:    "https://codeforces.com/enter",
 	sessionFile: "session_codeforces.dat",
 }
 
@@ -123,7 +123,7 @@ func (cf *codeforces) checkLoggedin(br *browser.Browser) bool {
 	}
 
 	// 問題の提出ページを開いて開ければログインできている
-	no1URL := "http://codeforces.com/contest/1/submit"
+	no1URL := "https://codeforces.com/contest/1/submit"
 	br.Open(no1URL)
 	return br.Url().String() == no1URL
 }
