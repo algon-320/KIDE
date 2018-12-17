@@ -17,7 +17,7 @@ $ go build
 ## 仕様
 
 ### 対応しているオンラインジャッジ
-- **Beta版**AtCoder
+- AtCoder
 - Codeforces
 - yukicoder
 - AOJ
