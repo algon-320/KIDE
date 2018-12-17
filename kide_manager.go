@@ -13,6 +13,7 @@ import (
 	"github.com/algon-320/KIDE/online_judge"
 	"github.com/algon-320/KIDE/setting"
 	"github.com/algon-320/KIDE/util"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 func downloadSampleCase(problemURL string) error {
@@ -44,6 +45,12 @@ func run(lang language.Language) error {
 
 // caseID : 負ならすべてのサンプルケースをテスト
 func tester(lang language.Language, problemID string, caseID int) error {
+	fd := int(os.Stdout.Fd())
+	termWidth, _, err := terminal.GetSize(fd)
+	if err != nil {
+		termWidth = 80
+	}
+
 	filename, err := language.FindSourceCode(lang)
 	if err != nil {
 		return err
@@ -65,13 +72,13 @@ func tester(lang language.Language, problemID string, caseID int) error {
 
 			// WA
 			if out != c.Output {
-				util.PrintTitle(30, 4, "=", "input")
+				util.PrintTitle(termWidth, 4, "=", "input")
 				fmt.Print(c.Input)
-				util.PrintTitle(30, 4, "=", "your answer")
+				util.PrintTitle(termWidth, 4, "=", "your answer")
 				fmt.Print(out)
-				util.PrintTitle(30, 4, "=", "correct answer")
+				util.PrintTitle(termWidth, 4, "=", "correct answer")
 				fmt.Print(c.Output)
-				fmt.Println(strings.Repeat("=", 30))
+				fmt.Println(strings.Repeat("=", termWidth))
 
 				fmt.Println(util.ESCS_COL_RED_B + "Wrong answer" + util.ESCS_COL_OFF)
 				samplePassed = false
@@ -84,11 +91,11 @@ func tester(lang language.Language, problemID string, caseID int) error {
 	} else if 0 < caseID && caseID <= len(p.Cases) {
 		c := p.Cases[caseID-1]
 
-		util.PrintTitle(30, 4, "=", "input")
+		util.PrintTitle(termWidth, 4, "=", "input")
 		fmt.Print(c.Input)
-		util.PrintTitle(30, 4, "=", "output")
+		util.PrintTitle(termWidth, 4, "=", "output")
 		out, err := lang.Run(filename, c.Input, true) // 画面出力しながら実行
-		fmt.Println(strings.Repeat("=", 30))
+		fmt.Println(strings.Repeat("=", termWidth))
 
 		if err != nil {
 			return err
@@ -98,11 +105,11 @@ func tester(lang language.Language, problemID string, caseID int) error {
 			fmt.Println(util.ESCS_COL_GREEN_B + "Passed" + util.ESCS_COL_OFF)
 		} else {
 			fmt.Println(util.ESCS_COL_RED_B + "Wrong answer" + util.ESCS_COL_OFF)
-			util.PrintTitle(30, 4, "=", "your answer")
+			util.PrintTitle(termWidth, 4, "=", "your answer")
 			fmt.Print(out)
-			util.PrintTitle(30, 4, "=", "correct answer")
+			util.PrintTitle(termWidth, 4, "=", "correct answer")
 			fmt.Print(c.Output)
-			fmt.Println(strings.Repeat("=", 30))
+			fmt.Println(strings.Repeat("=", termWidth))
 		}
 	} else {
 		return fmt.Errorf(util.PrefixError+"case id should be 1 to %d", len(p.Cases))

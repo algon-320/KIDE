@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/algon-320/KIDE/util"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 const (
@@ -38,19 +39,25 @@ type Problem struct {
 
 // TODO : String() にするべき
 func (p *Problem) Print() {
+	fd := int(os.Stdout.Fd())
+	width, _, err := terminal.GetSize(fd)
+	if err != nil {
+		width = 80
+	}
+
 	fmt.Println("id:", p.ID)
 	fmt.Println("name:", p.Name)
 	fmt.Println("contest_id:", p.ContestID)
 	fmt.Println("url:", p.URL)
 	fmt.Println("oj:", p.Oj.Name())
 	for i, tc := range p.Cases {
-		util.PrintTitlef(30, 4, "=", "sample case %d", i)
-		util.PrintTitle(30, 8, "-", "Input")
+		util.PrintTitlef(width, 4, "=", "sample case %d", i)
+		util.PrintTitle(width, 8, "-", "Input")
 		fmt.Print(tc.Input)
-		util.PrintTitle(30, 8, "-", "Output")
+		util.PrintTitle(width, 8, "-", "Output")
 		fmt.Print(tc.Output)
 	}
-	fmt.Println(strings.Repeat("=", 30))
+	fmt.Println(strings.Repeat("=", width))
 }
 
 // Save ... ファイルに保存する
