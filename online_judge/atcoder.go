@@ -34,13 +34,11 @@ var AtCoder = &atcoder{
 func (ac *atcoder) getLangID(lang language.Language) (string, error) {
 	switch lang {
 	case language.CPP:
-		return "3003", nil // C++14 (GCC 5.4.1)
-	case language.PYTHON2:
-		return "3022", nil // Python2 (2.7.6)
+		return "4003", nil // C++17 (GCC 9.2.1)
 	case language.PYTHON3:
-		return "3023", nil // Python3 (3.4.3)
+		return "4006", nil // Python3 (3.8.2)
 	case language.JAVA:
-		return "3016", nil // Java8 (OpenJDK 1.8.0)
+		return "4005", nil // Java (OpenJDK 11.0.6)
 	default:
 		return "", &ErrUnsuportedLanguage{name: lang.Name()}
 	}
